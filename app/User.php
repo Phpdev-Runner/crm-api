@@ -9,13 +9,14 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+    #region PROPERTIES
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'role_id'
     ];
 
     /**
@@ -26,4 +27,18 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+    #endregion
+	
+	#region MAIN METHODS
+	
+	public function hasRole($role)
+	{
+	
+	}
+	
+	public function role()
+	{
+		return $this->belongsTo(Role::class);
+	}
+	#endregion
 }

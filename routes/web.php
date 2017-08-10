@@ -18,3 +18,17 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+/**
+ * Admin controllers
+ */
+Route::group(['namespace'=>'Admin'],function(){
+
+});
+
+/**
+ * Manager controllers
+ */
+Route::group(['namespace'=>'Manager'],function(){
+
+});

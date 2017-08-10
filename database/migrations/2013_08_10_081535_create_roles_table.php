@@ -18,6 +18,22 @@ class CreateRolesTable extends Migration
             $table->string('name');
             $table->timestamps();
         });
+        
+        // adding default roles: admin, manager, unauthorized
+	    DB::table('roles')->insert([
+	    	[   'name'=>'admin',
+			    'created_at' =>  \Carbon\Carbon::now(),
+			    'updated_at' => \Carbon\Carbon::now()
+		    ],
+	    	[   'name'=>'manager',
+			    'created_at' =>  \Carbon\Carbon::now(),
+			    'updated_at' => \Carbon\Carbon::now()
+		    ],
+	    	[   'name'=>'unauthorized',
+			    'created_at' =>  \Carbon\Carbon::now(),
+			    'updated_at' => \Carbon\Carbon::now()
+			]
+	    ]);
     }
 
     /**
