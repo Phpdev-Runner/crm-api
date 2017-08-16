@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -31,9 +32,9 @@ class User extends Authenticatable
 	
 	#region MAIN METHODS
 	
-	public function hasRole($role)
+	public function hasRole()
 	{
-	
+		return Auth::user()->role->name;
 	}
 	
 	public function role()

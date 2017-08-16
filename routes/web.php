@@ -12,23 +12,10 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+	if(Auth::check() === true){
+		return "logged in";
+	}
+    return view('auth.login');
 });
 
 Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-/**
- * Admin controllers
- */
-Route::group(['namespace'=>'Admin'],function(){
-
-});
-
-/**
- * Manager controllers
- */
-Route::group(['namespace'=>'Manager'],function(){
-
-});

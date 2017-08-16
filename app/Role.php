@@ -9,18 +9,24 @@ class Role extends Model
 {
     #region PROPERTIES
 	protected $table = 'roles';
-	private static $unauthorizedRoleName = 'unauthorized';
 	#endregion
 	
 	#region MAIN METHODS
 	
 	public static function unauthorizedRoleId()
 	{
-		$unauthorizedRoleID = DB::table('roles')->
-			where('name','=',self::$unauthorizedRoleName)->
+		$unauthorizedRoleID = self::where(
+				'name',
+				'=',config('roles.unauthorized'))->
 			first();
 		
 		return $unauthorizedRoleID->id;
+	}
+	
+	public static function getAllRoles()
+	{
+		$roles = self::all();
+		return $roles;
 	}
 	
 	public function users()
