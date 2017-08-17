@@ -5,26 +5,19 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, SoftDeletes;
 
     #region PROPERTIES
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'name', 'email', 'password', 'role_id'
     ];
+    
+	protected $dates = ['deleted_at'];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password', 'remember_token',
     ];
@@ -42,6 +35,23 @@ class User extends Authenticatable
 	public function authHasRole()
 	{
 		return Auth::user()->role->name;
+	}
+	
+	public static function checkNewEmailDuplicate($newEmail, $userID)
+	{
+		if($userID != null){
+			$userWithDuplicateEmail = self::where('email','=',$newEmail)->
+				where('id','<>', $userID)->first();
+		}else{
+			$userWithDuplicateEmail = self::where('email','!=',$newEmail)->
+				first();
+		}
+
+		if($userWithDuplicateEmail === null){
+			return false;
+		}else{
+			return true;
+		}
 	}
 	
 	public function role()

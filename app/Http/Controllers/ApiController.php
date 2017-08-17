@@ -31,8 +31,24 @@ class ApiController extends Controller {
 	public function respondCreated($message)
 	{
 		return $this->setStatusCode(201)->respond([
-			'status'=>'success',
-			'message'=>$message
+			'status' => 'created',
+			'message' => $message
+		]);
+	}
+	
+	public function respondUpdated($message = 'entity updated')
+	{
+		return $this->setStatusCode(202)->respond([
+			'status' => 'updated',
+			'message' => $message
+		]);
+	}
+	
+	public function respondDeleted($message = 'entity deleted')
+	{
+		return $this->setStatusCode(202)->respond([
+			'status' => 'deleted',
+			'message' => $message
 		]);
 	}
 	#endregion

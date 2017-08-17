@@ -28,7 +28,7 @@ class UsersController extends ApiController
 	}
 	
     /**
-     * Display a listing of the resource.
+     * + Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
@@ -36,7 +36,7 @@ class UsersController extends ApiController
     {
         $users = $this->getUsersWithRoles([config('roles.manager')]);
 
-        $users = $this->userTransformer->transformCollection($users->toArray());
+        $users = $this->userTransformer->transformManyCollections($users->toArray());
         
         if(!$users){
         	return $this->respondNotFound('Users table has no managers');
@@ -48,18 +48,14 @@ class UsersController extends ApiController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * + Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function storeManager(Request $request)
     {
-	    $validation = Validator::make(Request::all(),[
-		    'name' => 'required',
-		    'email' => 'required',
-	    ]);
-	    
+
 	    $name = Input::get('name');
 	    $email = Input::get('email');
 	    $role_id = Input::get('role_id');
@@ -69,7 +65,11 @@ class UsersController extends ApiController
 	    if(!$name || !$email || !$role_id || !$password){
 	    	return $this->respondBadRequest('user registration fields did not passed validation');
 	    }
-     
+		
+	    if($this->checkNewEmailDuplicatePresence(Input::get('email')=== true)){
+		    return $this->respondBadRequest("Another user with email ".Input::get('email')." exists in DB!");
+	    }
+
 	    $user = new User();
 	    $user->name = $name;
 	    $user->email = $email;
@@ -81,60 +81,81 @@ class UsersController extends ApiController
     }
 	
 	/**
-	 * Update the specified resource in storage.
+	 * + Show the form for editing the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function editManager($id)
+	{
+		$manager = $this->findUser($id);
+		
+		if($manager == null) {
+			return $this->respondBadRequest("There is no user with ID {$id}");
+		}
+		
+		if($manager->role->name == config('roles.manager')){
+			$manager = $this->userTransformer->transformOneCollection($manager->toArray());
+			return $this->respond($manager);
+		}else{
+			return $this->respondBadRequest("Selected user is not a manager");
+		}
+	}
+ 
+	/**
+	 * + Update the specified resource in storage.
 	 *
 	 * @param  \Illuminate\Http\Request  $request
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function updateManager(Request $request, $id)
+	public function updateManager($id)
 	{
-		$manager = User::find($id);
-		if($manager == null){
+		$manager = $this->findUser($id);
+		
+		if($manager == null) {
 			return $this->respondBadRequest("There is no user with ID {$id}");
 		}
 		
+		if(!Input::get('name') || !Input::get('email') || !Input::get('role_id')){
+			return $this->respondBadRequest("Some input data missing needed to update manager");
+		}
+		
+		if($this->checkNewEmailDuplicatePresence(Input::get('email'), $manager->id) === true){
+			return $this->respondBadRequest("Another user with email ".Input::get('email')." exists in DB!");
+		}
+
 		if($manager->role->name == config('roles.manager')){
 			$manager->name = Input::get('name');
 			$manager->email = Input::get('email');
 			$manager->role_id = Input::get('role_id');
 			$manager->save();
+			return $this->respondUpdated("User with ID {$manager->id} updated successfully");
 		}else{
 			return $this->respondBadRequest("User with ID {$id} is not a manager");
 		}
 	}
-
+	
     /**
-     * Display the specified resource.
+     * Remove (soft delete) the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function deleteManager($id)
     {
-        //
-    }
+        $user = $this->findUser($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        if($user === null){
+        	return $this->respondBadRequest("User with requested ID {$id} was not found!");
+        }
+        
+        if($user->role->name == config('roles.manager')){
+            $user->delete();
+            return $this->respondDeleted("Manager with ID {$id} was soft-deleted!");
+        }else{
+        	return $this->respondBadRequest("User with ID {$id} is not a manager!");
+        }
     }
     
     #endregion
@@ -144,6 +165,19 @@ class UsersController extends ApiController
 	{
 		$users = User::getUsersWithRoles($requiredRoles);
 		return $users;
+	}
+	
+	private function findUser($id)
+	{
+		$user = User::find($id);
+		return $user;
+	}
+	
+	private function checkNewEmailDuplicatePresence($newEmail, $userID = null)
+	{
+		$duplicateStatus = User::checkNewEmailDuplicate($newEmail, $userID);
+
+		return $duplicateStatus;
 	}
 	#endregion
 }

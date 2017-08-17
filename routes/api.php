@@ -16,7 +16,9 @@ use Illuminate\Http\Request;
 Route::group(['prefix'=>'v1'], function(){
 	Route::get('view-managers','UsersController@viewManagers');
 	Route::post('store-manager','UsersController@storeManager');
+	Route::get('edit-manager/{id}','UsersController@editManager');
 	Route::post('update-manager/{id}','UsersController@updateManager');
+	Route::post('delete-manager/{id}', 'UsersController@deleteManager');
 	
 	Route::post('invite-manager','UsersController@inviteManager');
 });
