@@ -157,7 +157,6 @@ class UsersController extends ApiController
         	return $this->respondBadRequest("User with ID {$id} is not a manager!");
         }
     }
-    
     #endregion
 	
 	#region SERVICE METHODS

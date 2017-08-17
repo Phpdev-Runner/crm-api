@@ -13,12 +13,13 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(App\User::class, function (Faker\Generator $faker) {
-    static $password;
-
+    $password = 'secret';
+	$managerRoleIDs = App\User::getRolesIDs([config('roles.manager'),config('roles.unauthorized')]);
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
-        'password' => $password ?: $password = bcrypt('secret'),
+	    'role_id' => $managerRoleIDs[array_rand($managerRoleIDs,1)],
+        'password' => bcrypt($password),
         'remember_token' => str_random(10),
     ];
 });

@@ -18,6 +18,17 @@ class CreateLeadCategoriesTable extends Migration
             $table->string('name');
             $table->timestamps();
         });
+        
+        $leadCategories = config('lead_categories');
+	    $leadCategoriesArray = [];
+	    foreach ($leadCategories AS $key=>$value){
+		    $leadCategoriesArray[] = [
+			    'name'=>$value,
+			    'created_at'=>\Carbon\Carbon::now(),
+			    'updated_at'=>\Carbon\Carbon::now()
+		    ];
+	    }
+	    DB::table('lead_categories')->insert($leadCategoriesArray);
     }
 
     /**

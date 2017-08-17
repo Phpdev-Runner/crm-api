@@ -26,6 +26,7 @@ class CreateLeadsTable extends Migration
             $table->foreign('application_type_id')->references('id')->on('application_types');
             $table->foreign('creator_id')->references('id')->on('users');
             $table->foreign('assignee_id')->references('id')->on('users');
+            $table->softDeletes();
         });
     }
 

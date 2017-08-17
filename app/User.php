@@ -58,15 +58,16 @@ class User extends Authenticatable
 	{
 		return $this->belongsTo(Role::class);
 	}
-	#endregion
 	
-	#region SERVICE METHODS
-	private static function getRolesIDs(array $roles)
+	public static function getRolesIDs(array $roles)
 	{
 		foreach ($roles AS $key=>$role){
 			$roles[$key] = Role::where('name','=',$role)->first()->id;
 		}
 		return $roles;
 	}
+	#endregion
+	
+	#region SERVICE METHODS
 	#endregion
 }

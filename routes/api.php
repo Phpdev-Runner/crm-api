@@ -21,6 +21,8 @@ Route::group(['prefix'=>'v1'], function(){
 	Route::post('delete-manager/{id}', 'UsersController@deleteManager');
 	
 	Route::post('invite-manager','UsersController@inviteManager');
+	
+	Route::get('view-leads','LeadsController@viewLeads');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

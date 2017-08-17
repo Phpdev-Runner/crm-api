@@ -18,6 +18,18 @@ class CreateApplicationTypesTable extends Migration
             $table->string('name');
             $table->timestamps();
         });
+        
+        $applicationTypes = config('lead_application_types');
+        
+        $applicationTypesArray = [];
+        foreach ($applicationTypes AS $key=>$value){
+			$applicationTypesArray[] = [
+				'name'=>$value,
+				'created_at'=>\Carbon\Carbon::now(),
+				'updated_at'=>\Carbon\Carbon::now()
+			];
+        }
+	    DB::table('application_types')->insert($applicationTypesArray);
     }
 
     /**
