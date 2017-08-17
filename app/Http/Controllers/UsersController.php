@@ -94,7 +94,7 @@ class UsersController extends ApiController
 			return $this->respondBadRequest("There is no user with ID {$id}");
 		}
 		
-		if($manager->role->name == config('roles.manager')){
+		if($manager->role->name == config('constants.roles.manager')){
 			$manager = $this->userTransformer->transformOneCollection($manager->toArray());
 			return $this->respond($manager);
 		}else{
@@ -125,7 +125,7 @@ class UsersController extends ApiController
 			return $this->respondBadRequest("Another user with email ".Input::get('email')." exists in DB!");
 		}
 
-		if($manager->role->name == config('roles.manager')){
+		if($manager->role->name == config('constants.roles.manager')){
 			$manager->name = Input::get('name');
 			$manager->email = Input::get('email');
 			$manager->role_id = Input::get('role_id');
@@ -150,7 +150,7 @@ class UsersController extends ApiController
         	return $this->respondBadRequest("User with requested ID {$id} was not found!");
         }
         
-        if($user->role->name == config('roles.manager')){
+        if($user->role->name == config('constants.roles.manager')){
             $user->delete();
             return $this->respondDeleted("Manager with ID {$id} was soft-deleted!");
         }else{

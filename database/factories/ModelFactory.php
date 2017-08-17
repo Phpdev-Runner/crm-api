@@ -23,3 +23,15 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+$factory->define(App\Lead::class, function(Faker\Generator $faker){
+	
+	return [
+		'category_id' => '',
+		'application_type_id'=>'',
+		'creator_id'=>'',
+		'assignee_id'=>'',
+		'name'=>$faker->name,
+		'responsive'=>''
+	];
+});

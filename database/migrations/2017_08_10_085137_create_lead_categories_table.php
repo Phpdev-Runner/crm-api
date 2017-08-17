@@ -19,7 +19,7 @@ class CreateLeadCategoriesTable extends Migration
             $table->timestamps();
         });
         
-        $leadCategories = config('lead_categories');
+        $leadCategories = config('constants.lead_categories');
 	    $leadCategoriesArray = [];
 	    foreach ($leadCategories AS $key=>$value){
 		    $leadCategoriesArray[] = [

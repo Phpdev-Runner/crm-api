@@ -19,7 +19,7 @@ class CreateApplicationTypesTable extends Migration
             $table->timestamps();
         });
         
-        $applicationTypes = config('lead_application_types');
+        $applicationTypes = config('constants.application_types');
         
         $applicationTypesArray = [];
         foreach ($applicationTypes AS $key=>$value){

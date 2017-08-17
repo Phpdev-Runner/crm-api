@@ -20,7 +20,7 @@ class CreateRolesTable extends Migration
 		});
 		
 		// adding default roles: admin, manager, unauthorized from config file
-		$roles = config('roles');
+		$roles = config('constants.roles');
 		$insertArray = [];
 		foreach ($roles AS $role){
 			$insertArray[] = [
