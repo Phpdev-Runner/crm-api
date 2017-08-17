@@ -31,8 +31,15 @@ class User extends Authenticatable
     #endregion
 	
 	#region MAIN METHODS
+
+	public static function getUsersWithRoles(array $roles)
+	{
+		$rolesIDs = self::getRolesIDs($roles);
+		$users = self::whereIn('role_id',$rolesIDs)->get();
+		return $users;
+	}
 	
-	public function hasRole()
+	public function authHasRole()
 	{
 		return Auth::user()->role->name;
 	}
@@ -40,6 +47,16 @@ class User extends Authenticatable
 	public function role()
 	{
 		return $this->belongsTo(Role::class);
+	}
+	#endregion
+	
+	#region SERVICE METHODS
+	private static function getRolesIDs(array $roles)
+	{
+		foreach ($roles AS $key=>$role){
+			$roles[$key] = Role::where('name','=',$role)->first()->id;
+		}
+		return $roles;
 	}
 	#endregion
 }

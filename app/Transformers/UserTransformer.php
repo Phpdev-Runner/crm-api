@@ -14,7 +14,7 @@ class UserTransformer extends Transformer {
 	public function transform($user)
 	{
 		return [
-			'title'=>$user['name'],
+			'name'=>$user['name'],
 			'email'=>$user['email']
 		];
 	}

@@ -18,4 +18,10 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
+Route::get('logout', function(){
+	\Illuminate\Support\Facades\Auth::logout();
+	return view('auth.login');
+});
+
+
 Auth::routes();
