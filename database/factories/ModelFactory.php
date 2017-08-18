@@ -14,7 +14,10 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(App\User::class, function (Faker\Generator $faker) {
     $password = 'secret';
-	$managerRoleIDs = App\User::getRolesIDs([config('roles.manager'),config('roles.unauthorized')]);
+	$managerRoleIDs = App\User::getRolesIDs([
+		config('constants.roles.manager'),
+		config('constants.roles.unauthorized')
+	]);
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
@@ -25,13 +28,34 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(App\Lead::class, function(Faker\Generator $faker){
-	
+
+	//get application types IDs
+	$applicationTypeIDs = DB::table('application_types')->get();
+	$applicationTypesIDsArray = [];
+	foreach ($applicationTypeIDs AS $key=>$value){
+		$applicationTypesIDsArray[] = $value->id;
+	}
+
+	//get lead categories IDs
+	$leadCategoriesIDs = DB::table('lead_categories')->get();
+	$leadCategoriesIDsArray = [];
+	foreach($leadCategoriesIDs AS $key=>$value){
+		$leadCategoriesIDsArray[] = $value->id;
+	}
+
+	$userIDs = DB::table('users')->get();
+	$userIDsArray = [];
+	foreach($userIDs AS $key=>$value){
+		$userIDsArray[] = $value->id;
+	}
+
+	//get application
 	return [
-		'category_id' => '',
-		'application_type_id'=>'',
-		'creator_id'=>'',
-		'assignee_id'=>'',
+		'category_id' => $leadCategoriesIDsArray[array_rand($leadCategoriesIDsArray,1)],
+		'application_type_id'=>$applicationTypesIDsArray[array_rand($applicationTypesIDsArray,1)],
+		'creator_id'=>$userIDsArray[array_rand($userIDsArray,1)],
+		'assignee_id'=>$userIDsArray[array_rand($userIDsArray,1)],
 		'name'=>$faker->name,
-		'responsive'=>''
+		'responsive'=>rand(0,1)
 	];
 });

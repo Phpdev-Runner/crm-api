@@ -6,6 +6,7 @@
  * Time: 17:34
  */
 return [
+	//thinks twice before changing roles values
 	'roles' => [
 		'admin'=>'admin',
 		'manager' => 'manager',

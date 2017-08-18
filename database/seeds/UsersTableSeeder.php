@@ -14,7 +14,7 @@ class UsersTableSeeder extends Seeder
         DB::table('users')->insert([
         	'name'=>'Andrey Naumoff',
 	        'email'=>'andrey.naumoff@gmail.com',
-	        'role_id'=>\App\User::getRolesIDs([config('roles.admin')])[0],
+	        'role_id'=>\App\User::getRolesIDs([config('constants.roles.admin')])[0],
 	        'password'=>bcrypt('secret')
         ]);
         

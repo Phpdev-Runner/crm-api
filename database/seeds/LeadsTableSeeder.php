@@ -11,6 +11,6 @@ class LeadsTableSeeder extends Seeder
      */
     public function run()
     {
-    
+        factory('App\Lead',50)->create();
     }
 }
