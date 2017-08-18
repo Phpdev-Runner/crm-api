@@ -11,26 +11,25 @@ namespace App\Transformers;
 
 class UserTransformer extends Transformer {
 	
-	public function transformMany($users)
+	public function transformMany($user)
 	{
-//		dd($user);
 		return [
-			'id'=>$users['id'],
-			'name'=>$users['name'],
-			'email'=>$users['email']
+			'id'=>$user['id'],
+			'name'=>$user['name'],
+			'email'=>$user['email'],
+			'role_id'=>$user['role_id'],
+			'role_name'=>$user['role']['name']
 		];
 	}
 	
 	public function transformOne($user)
 	{
-//		dd($user);
 		return [
 			'id'=>$user['id'],
 			'name'=>$user['name'],
 			'email'=>$user['email'],
-			'role_is'=>$user['role_id'],
-			'role'=>$user['role']['name']
-			
+			'role_id'=>$user['role_id'],
+			'role_name'=>$user['role']['name']
 		];
 	}
 	

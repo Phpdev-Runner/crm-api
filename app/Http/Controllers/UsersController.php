@@ -34,11 +34,11 @@ class UsersController extends ApiController
      */
     public function viewManagers()
     {
-        $users = $this->getUsersWithRoles([config('roles.manager')]);
+        $users = $this->getUsersWithRoles([config('constants.roles.manager')]);
 
-        $users = $this->userTransformer->transformManyCollections($users->toArray());
+        $users = $this->userTransformer->transformManyCollections($users);
         
-        if(!$users){
+         if(!$users){
         	return $this->respondNotFound('Users table has no managers');
         }
         
@@ -95,7 +95,7 @@ class UsersController extends ApiController
 		}
 		
 		if($manager->role->name == config('constants.roles.manager')){
-			$manager = $this->userTransformer->transformOneCollection($manager->toArray());
+			$manager = $this->userTransformer->transformOneModel($manager);
 			return $this->respond($manager);
 		}else{
 			return $this->respondBadRequest("Selected user is not a manager");

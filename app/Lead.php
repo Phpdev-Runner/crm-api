@@ -24,7 +24,7 @@ class Lead extends Model
 	#region MAIN METHODS
 	public static function viewAllLeads()
 	{
-		$allLeads = self::get();
+		$allLeads = self::with('leadCategory')->with('applicationType')->get();
 		return $allLeads;
 	}
 	
@@ -36,6 +36,16 @@ class Lead extends Model
 	public function applicationType()
 	{
 		return $this->belongsTo(ApplicationType::class, 'application_type_id','id');
+	}
+	
+	public function creator()
+	{
+		return $this->belongsTo(User::class, 'creator_id','id');
+	}
+	
+	public function assignee()
+	{
+		return $this->belongsTo(User::class,'creator_id','id');
 	}
 	#endregion
 	

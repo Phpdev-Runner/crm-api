@@ -28,7 +28,7 @@ class User extends Authenticatable
 	public static function getUsersWithRoles(array $roles)
 	{
 		$rolesIDs = self::getRolesIDs($roles);
-		$users = self::whereIn('role_id',$rolesIDs)->get();
+		$users = self::with('role')->whereIn('role_id',$rolesIDs)->get();
 		return $users;
 	}
 	

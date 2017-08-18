@@ -21,7 +21,16 @@ class LeadsController extends ApiController
 	public function viewLeads()
 	{
 		$leads = $this->viewAllLeads();
-		dd($leads);
+		$leads = $this->leadTransformer->transformManyCollections($leads);
+//		dd($leads);
+		
+		if(!$leads){
+			return $this->respondNotFound('Leads table is empty');
+		}
+		
+		return $this->respond([
+			'leads'=>$leads
+		]);
 	}
 	#endregion
 	
