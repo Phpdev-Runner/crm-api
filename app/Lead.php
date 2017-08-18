@@ -22,9 +22,20 @@ class Lead extends Model
 	#endregion
 	
 	#region MAIN METHODS
-	public function viewAllLeads()
+	public static function viewAllLeads()
 	{
+		$allLeads = self::get();
+		return $allLeads;
+	}
 	
+	public function leadCategory()
+	{
+		return $this->belongsTo(LeadCategory::class,'category_id','id');
+	}
+	
+	public function applicationType()
+	{
+		return $this->belongsTo(ApplicationType::class, 'application_type_id','id');
 	}
 	#endregion
 	

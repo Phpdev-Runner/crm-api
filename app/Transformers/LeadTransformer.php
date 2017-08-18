@@ -9,6 +9,15 @@
 namespace App\Transformers;
 
 
-class LeadTransformer {
+class LeadTransformer extends Transformer
+{
+	public function transformMany($leads)
+	{
 	
+	}
+	
+	public function transformOne($lead)
+	{
+	
+	}
 }
