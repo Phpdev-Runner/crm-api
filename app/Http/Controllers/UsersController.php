@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Role;
-use App\Transformers\UserTransformer;
 use App\User;
+use App\Transformers\UserTransformer;
+use App\Transformers\CreateUserTransformer;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,14 +18,16 @@ class UsersController extends ApiController
 	#region CLASS PROPERTIES
 	protected $dates = ['deleted_at'];
 	protected $userTransformer;
+	protected $createUserTransformer;
 	#endregion
 	
 	
 	#region MAIN METHODS
 	
-	public function __construct(UserTransformer $userTransformer)
+	public function __construct(UserTransformer $userTransformer, CreateUserTransformer $createUserTransformer)
 	{
 		$this->userTransformer = $userTransformer;
+		$this->createUserTransformer = $createUserTransformer;
 	}
 	
     /**
@@ -39,12 +42,24 @@ class UsersController extends ApiController
         $users = $this->userTransformer->transformManyCollections($users);
         
          if(!$users){
-        	return $this->respondNotFound('Users table has no managers');
+         	return $this->respondNoContent('Users table has no managers');
         }
         
         return $this->respond([
         	'users'=>$users
         ]);
+    }
+	
+	/**
+	 * + supply roles data for create user form
+	 * @return mixed
+	 */
+    public function userEmptyFormShow()
+    {
+    	$userEmptyFormData = $this->getDataForUserEmptyForm();
+    	$userEmptyFormData = $this->createUserTransformer->
+	        transformDataForEmptyForm($userEmptyFormData);
+    	return $this->respond($userEmptyFormData);
     }
 
     /**
@@ -55,7 +70,6 @@ class UsersController extends ApiController
      */
     public function storeManager(Request $request)
     {
-
 	    $name = Input::get('name');
 	    $email = Input::get('email');
 	    $role_id = Input::get('role_id');
@@ -91,7 +105,7 @@ class UsersController extends ApiController
 		$manager = $this->findUser($id);
 		
 		if($manager == null) {
-			return $this->respondBadRequest("There is no user with ID {$id}");
+			return $this->respondNoContent("There is no user with ID {$id}");
 		}
 		
 		if($manager->role->name == config('constants.roles.manager')){
@@ -114,7 +128,7 @@ class UsersController extends ApiController
 		$manager = $this->findUser($id);
 		
 		if($manager == null) {
-			return $this->respondBadRequest("There is no user with ID {$id}");
+			return $this->respondNoContent("There is no user with ID {$id}");
 		}
 		
 		if(!Input::get('name') || !Input::get('email') || !Input::get('role_id')){
@@ -139,27 +153,32 @@ class UsersController extends ApiController
     /**
      * Remove (soft delete) the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int  $userID
      * @return \Illuminate\Http\Response
      */
-    public function deleteManager($id)
+    public function deleteManager($userID)
     {
-        $user = $this->findUser($id);
+        $user = $this->findUser($userID);
 
         if($user === null){
-        	return $this->respondBadRequest("User with requested ID {$id} was not found!");
+        	return $this->respondNoContent("User with requested ID {$userID} was not found!");
         }
         
         if($user->role->name == config('constants.roles.manager')){
             $user->delete();
-            return $this->respondDeleted("Manager with ID {$id} was soft-deleted!");
+            return $this->respondDeleted("Manager with ID {$userID} was soft-deleted!");
         }else{
-        	return $this->respondBadRequest("User with ID {$id} is not a manager!");
+        	return $this->respondBadRequest("User with ID {$userID} is not a manager!");
         }
     }
     #endregion
 	
 	#region SERVICE METHODS
+	private function getDataForUserEmptyForm()
+	{
+		return Role::getAllRoles()->toArray();
+	}
+	
 	private function getUsersWithRoles($requiredRoles)
 	{
 		$users = User::getUsersWithRoles($requiredRoles);

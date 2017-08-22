@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class Transformer
 {
-	
 	// transform collection of collections
 	public function transformManyCollections(Collection $collections)
 	{

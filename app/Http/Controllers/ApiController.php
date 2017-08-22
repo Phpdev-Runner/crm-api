@@ -18,6 +18,11 @@ class ApiController extends Controller {
 		return Response::json($data, $this->getStatusCode(),$headers);
 	}
 	
+	public function respondNoContent($message = 'No Content')
+	{
+		return $this->setStatusCode(204)->respondWithError($message);
+	}
+	
 	public function respondNotFound($message = 'Not Found')
 	{
 		return $this->setStatusCode(404)->respondWithError($message);

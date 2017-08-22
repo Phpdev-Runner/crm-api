@@ -24,7 +24,10 @@ class Lead extends Model
 	#region MAIN METHODS
 	public static function viewAllLeads()
 	{
-		$allLeads = self::with('leadCategory')->with('applicationType')->get();
+		$allLeads = self::with('leadCategory')->
+			with('applicationType')->
+			with('creator')->
+			with('assignee')->get();
 		return $allLeads;
 	}
 	
@@ -45,7 +48,7 @@ class Lead extends Model
 	
 	public function assignee()
 	{
-		return $this->belongsTo(User::class,'creator_id','id');
+		return $this->belongsTo(User::class,'assignee_id','id');
 	}
 	#endregion
 	

@@ -14,7 +14,9 @@ use Illuminate\Http\Request;
 */
 
 Route::group(['prefix'=>'v1'], function(){
+	// MANAGERS
 	Route::get('view-managers','UsersController@viewManagers');
+	Route::get('user-empty-form-show', 'UsersController@userEmptyFormShow');
 	Route::post('store-manager','UsersController@storeManager');
 	Route::get('edit-manager/{id}','UsersController@editManager');
 	Route::post('update-manager/{id}','UsersController@updateManager');
@@ -22,7 +24,10 @@ Route::group(['prefix'=>'v1'], function(){
 	
 	Route::post('invite-manager','UsersController@inviteManager');
 	
+	// LEADS
 	Route::get('view-leads','LeadsController@viewLeads');
+	Route::get('lead-empty-form-show','LeadsController@leadEmptyFormShow');
+	Route::post('store-lead','LeadsController@storeLead');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

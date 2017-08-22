@@ -11,7 +11,10 @@ class LeadCategory extends Model
 	#endregion
 	
 	#region MAIN METHODS
-	
+	public static function getLeadCategories()
+	{
+		return self::all();
+	}
 	#endregion
 	
 	#region SERVICE METHODS

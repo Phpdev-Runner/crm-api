@@ -11,7 +11,10 @@ class ApplicationType extends Model
 	#endregion
 	
 	#region MAIN METHODS
-	
+	public static function getApplicationTypes()
+	{
+		return self::all();
+	}
 	#endregion
 	
 	#region SERVICE METHODS
