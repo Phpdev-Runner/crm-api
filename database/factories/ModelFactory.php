@@ -11,7 +11,9 @@
 |
 */
 
-/** USER */
+/**
+ * USER
+ */
 $factory->define(App\User::class, function (Faker\Generator $faker) {
     $password = 'secret';
 	$managerRoleIDs = App\User::getRolesIDs([
@@ -46,6 +48,7 @@ $factory->define(App\Lead::class, function(Faker\Generator $faker){
 		$leadCategoriesIDsArray[] = $value->id;
 	}
 
+	// get User IDs
 	$userIDs = DB::table('users')->get();
 	$userIDsArray = [];
 	foreach($userIDs AS $key=>$value){
@@ -68,17 +71,34 @@ $factory->define(App\Lead::class, function(Faker\Generator $faker){
  */
 $factory->define(\App\Domain::class, function(Faker\Generator $faker){
 
-    $leadIDs = DB::table('leads')->get();
-
-    $leadIDsArray = [];
-
-    foreach ($leadIDs AS $key=>$value){
-        $leadIDsArray[] = $value->id;
-    }
+    // get Lead IDs
+    $leadIDsArray = getLeadsIDs();
 
     return [
         'lead_id' => $leadIDsArray[array_rand($leadIDsArray,1)],
         'value' => $faker->unique()->domainName,
     ];
 });
+
+/**
+ * COMMUNICATION VALUES
+ */
+$factory->define(\App\CommunicationValue::class, function(){
+    // get Lead IDs
+    $leadIDsArray = getLeadsIDs();
+
+});
+
+
+#region SERVICE METHODS
+function getLeadsIDs()
+{
+    $leadIDs = DB::table('leads')->get();
+    $leadIDsArray = [];
+    foreach ($leadIDs AS $key=>$value){
+        $leadIDsArray[] = $value->id;
+    }
+    return $leadIDsArray;
+}
+#endregion
 
