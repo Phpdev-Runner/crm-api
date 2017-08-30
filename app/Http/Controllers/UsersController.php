@@ -96,9 +96,6 @@ class UsersController extends ApiController
 	
 	/**
 	 * + Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
 	 */
 	public function editManager($id)
 	{
@@ -118,10 +115,6 @@ class UsersController extends ApiController
  
 	/**
 	 * + Update the specified resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
 	 */
 	public function updateManager($id)
 	{
@@ -152,9 +145,6 @@ class UsersController extends ApiController
 	
     /**
      * Remove (soft delete) the specified resource from storage.
-     *
-     * @param  int  $userID
-     * @return \Illuminate\Http\Response
      */
     public function deleteManager($userID)
     {

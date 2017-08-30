@@ -41,6 +41,7 @@ Route::group(['prefix'=>'v1'], function(){
 	Route::get('lead-empty-form-show','LeadsController@leadEmptyFormShow');
 	Route::post('store-lead','LeadsController@storeLead');
 	Route::get('edit-lead/{id}', 'LeadsController@editLead');
+	Route::post('update-lead/{id}', 'LeadsController@updateLead');
 
 
 	//test

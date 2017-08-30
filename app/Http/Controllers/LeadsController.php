@@ -27,9 +27,12 @@ class LeadsController extends ApiController
         $this->createLeadTransformer = $createLeadTransformer;
     }
 
+    /**
+     * show all leads
+     */
 	public function viewLeads()
 	{
-		$leads = $this->viewAllLeads();
+		$leads = $this->findAllLeads();
 
 		$leads = $this->leadTransformer->transformManyCollections($leads);
 		
@@ -41,7 +44,10 @@ class LeadsController extends ApiController
 			'leads'=>$leads
 		]);
 	}
-	
+
+    /**
+     * show form for new lead creation
+     */
 	public function leadEmptyFormShow()
 	{
 		$leadCategories = $this->getLeadCategories();
@@ -56,7 +62,10 @@ class LeadsController extends ApiController
 
 		return $this->respond($createNewLeadFormData);
 	}
-	
+
+    /**
+     * save new lead
+     */
 	public function storeLead()
 	{
 		$categoryID = Input::get('category_id');
@@ -93,19 +102,48 @@ class LeadsController extends ApiController
         return $this->respondCreated("new lead successfully created!");
 	}
 
+    /**
+     * show data for lead edit form
+     */
 	public function editLead($id)
     {
-        var_dump($id);
+        $lead = $this->findLead($id);
+
+        if($lead == null){
+            return $this->respondNoContent("Lead with ID {$id} does not exits!");
+        }
+        $lead = $this->leadTransformer->transformOneModel($lead);
+
+        return $this->respond($lead);
+    }
+
+    /**
+     * update lead
+     */
+    public function updateLead($id)
+    {
+        $lead = $this->findLead($id);
+
+        if($lead === null){
+            return $this->respondNoContent("Lead with ID {$id} does not exists!");
+        }
+
+        exit("OK!");
+
     }
 	#endregion
 	
 	#region SERVICE METHODS
-	private function viewAllLeads()
+	private function findAllLeads()
 	{
-		$allLeads = Lead::viewAllLeads();
-		return $allLeads;
+		return Lead::viewAllLeads();
 	}
-	
+
+    private function findLead($id)
+    {
+        return Lead::viewLead($id);
+    }
+
 	private function getLeadCategories()
 	{
 		$leadCategories = LeadCategory::getLeadCategories();
@@ -167,5 +205,6 @@ class LeadsController extends ApiController
         }
         return $domain;
     }
+
 	#endregion
 }

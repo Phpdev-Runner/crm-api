@@ -20,7 +20,7 @@ class ApiController extends Controller {
 	
 	public function respondNoContent($message = 'No Content')
 	{
-		return $this->setStatusCode(204)->respondWithError($message);
+		return $this->setStatusCode(406)->respondWithError($message);
 	}
 	
 	public function respondNotFound($message = 'Not Found')

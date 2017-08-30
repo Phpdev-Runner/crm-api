@@ -40,6 +40,10 @@ class LeadTransformer extends Transformer
 	public function transformOne($lead)
 	{
 		//		dd($lead);
+        $domains = [];
+        foreach ($lead['domains'] AS $key=>$domainData){
+            $domains[] = $domainData['value'];
+        }
 		return [
 			'id'=>$lead['id'],
 			'name'=>$lead['name'],
@@ -54,6 +58,7 @@ class LeadTransformer extends Transformer
 			'assignee_id'=>$lead['assignee_id'],
 			'assignee_name'=>$lead['assignee']['name'],
 			'assignee_email'=>$lead['assignee']['email'],
+            'domains'=>$domains
 		];
 	}
 }
