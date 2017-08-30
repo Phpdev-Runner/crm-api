@@ -19,6 +19,24 @@ class Domain extends Model
     #endregion
 
     #region MAIN METHODS
+
+    public static function checkDomainDuplicates(array $domains)
+    {
+        $duplicateDomains = self::whereIn('value',$domains)->get()->toArray();
+
+        $returnData = [];
+
+        if(count($duplicateDomains)>1){
+            foreach ($duplicateDomains AS $key=>$domain){
+                $returnData[] = $domain['value'];
+            }
+            $returnData = implode(', ',$returnData);
+            return $returnData;
+        }else{
+            return false;
+        }
+    }
+
     public function lead()
     {
         return $this->belongsTo(Lead::class);

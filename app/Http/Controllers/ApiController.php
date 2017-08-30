@@ -32,6 +32,11 @@ class ApiController extends Controller {
 	{
 		return $this->setStatusCode(400)->respondWithError($message);
 	}
+
+	public function respondDataConflict($message = 'Provided data has conflict')
+    {
+        return $this->setStatusCode(409)->respondWithError($message);
+    }
 	
 	public function respondCreated($message)
 	{

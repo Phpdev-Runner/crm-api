@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ApplicationType;
+use App\Domain;
 use App\Lead;
 use App\LeadCategory;
 use App\Transformers\CreateLeadTransformer;
@@ -20,16 +21,16 @@ class LeadsController extends ApiController
 	#endregion
 	
 	#region MAIN METHODS
-	public function __construct(LeadTransformer $leadTransformer,
-								CreateLeadTransformer $createLeadTransformer)
-	{
-		$this->leadTransformer = $leadTransformer;
-		$this->createLeadTransformer = $createLeadTransformer;
-	}
-	
+    public function __construct(LeadTransformer $leadTransformer, CreateLeadTransformer $createLeadTransformer)
+    {
+        $this->leadTransformer = $leadTransformer;
+        $this->createLeadTransformer = $createLeadTransformer;
+    }
+
 	public function viewLeads()
 	{
 		$leads = $this->viewAllLeads();
+
 		$leads = $this->leadTransformer->transformManyCollections($leads);
 		
 		if(!$leads){
@@ -64,33 +65,38 @@ class LeadsController extends ApiController
 		$assigneeID = Input::get('assignee_id');
 		$name = Input::get('name');
 		$responsive = Input::get('responsive');
+		$domains = json_decode(Input::get('domains'),true);
 
-        if(!$categoryID || !$applicationID || !$creatorID || !$assigneeID || !$name || !$responsive){
+        if(!$categoryID || !$applicationID || !$creatorID || !$assigneeID || !$name || !$responsive || !$domains){
             return $this->respondBadRequest('Lead registration fields did not passed validation');
         }
 
-        $lead = new Lead();
-        $lead->category_id = $categoryID;
-        $lead->application_type_id = $applicationID;
-        $lead->creator_id = $creatorID;
-        $lead->assignee_id = $assigneeID;
-        $lead->name = $name;
-        $lead->responsive = $responsive;
-        $lead->save();
+        $duplicateDomains = $this->checkEmailDuplicates($domains);
 
-        $leadID = $lead->id;
+        if($duplicateDomains !== false){
+            return $this->respondDataConflict("Provided domains ( {$duplicateDomains} ) are already registered in the system");
+        }
+
+        $leadData = [
+            'category_id' => $categoryID,
+            'application_type_id' => $applicationID,
+            'creator_id' => $categoryID,
+            'assignee_id' => $assigneeID,
+            'name' => $name,
+            'responsive' => $responsive
+        ];
+
+        $lead = $this->saveLead($leadData);
+
+        $this->saveDomains($lead->id, $domains);
 
         return $this->respondCreated("new lead successfully created!");
-
-//		var_dump(Auth::check());
-//		var_dump($categoryID);
-//		var_dump($applicationID);
-//		var_dump($creatorID);
-//		var_dump($assigneeID);
-//		var_dump($name);
-//		var_dump($responsive);
-
 	}
+
+	public function editLead($id)
+    {
+        var_dump($id);
+    }
 	#endregion
 	
 	#region SERVICE METHODS
@@ -134,6 +140,32 @@ class LeadsController extends ApiController
         ]);
 
         return $assignees;
+    }
+
+    private function checkEmailDuplicates(array $domains)
+    {
+        $duplicatesDomains = Domain::checkDomainDuplicates($domains);
+
+        return $duplicatesDomains;
+    }
+
+    private function saveLead($leadData)
+    {
+        $lead = Lead::create($leadData);
+
+        return $lead;
+    }
+
+    private function saveDomains($leadID, array $domains)
+    {
+        foreach ($domains AS $domain){
+            $domainData = [
+                'lead_id' => $leadID,
+                'value' => $domain
+            ];
+            $domain = Domain::create($domainData);
+        }
+        return $domain;
     }
 	#endregion
 }

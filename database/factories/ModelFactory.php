@@ -11,7 +11,7 @@
 |
 */
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+/** USER */
 $factory->define(App\User::class, function (Faker\Generator $faker) {
     $password = 'secret';
 	$managerRoleIDs = App\User::getRolesIDs([
@@ -27,6 +27,9 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
     ];
 });
 
+/**
+ * LEAD
+ */
 $factory->define(App\Lead::class, function(Faker\Generator $faker){
 
 	//get application types IDs
@@ -60,6 +63,9 @@ $factory->define(App\Lead::class, function(Faker\Generator $faker){
 	];
 });
 
+/**
+ * DOMAIN
+ */
 $factory->define(\App\Domain::class, function(Faker\Generator $faker){
 
     $leadIDs = DB::table('leads')->get();
@@ -75,3 +81,4 @@ $factory->define(\App\Domain::class, function(Faker\Generator $faker){
         'value' => $faker->unique()->domainName,
     ];
 });
+

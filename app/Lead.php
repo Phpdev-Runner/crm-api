@@ -27,9 +27,15 @@ class Lead extends Model
 		$allLeads = self::with('leadCategory')->
 			with('applicationType')->
 			with('creator')->
-			with('assignee')->get();
+			with('assignee')->
+            with('domains')->get();
 		return $allLeads;
 	}
+
+	public static function viewLead($id)
+    {
+        return null;
+    }
 	
 	public function leadCategory()
 	{
