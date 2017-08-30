@@ -18,6 +18,10 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
+Route::get('/test', function(){
+    var_dump(Auth::check());
+});
+
 Route::get('logout', function(){
 	\Illuminate\Support\Facades\Auth::logout();
 	return view('auth.login');

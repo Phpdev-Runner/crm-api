@@ -50,6 +50,11 @@ class Lead extends Model
 	{
 		return $this->belongsTo(User::class,'assignee_id','id');
 	}
+
+	public function domains()
+    {
+        return $this->hasMany(Domain::class);
+    }
 	#endregion
 	
 	#region SERVICE METHODS

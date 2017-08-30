@@ -18,7 +18,8 @@ class CreateDomainsTable extends Migration
             $table->integer('lead_id')->unsigned();
             $table->string('value');
             $table->timestamps();
-            $table->foreign('lead_id')->references('id')->on('leads');
+            $table->softDeletes();
+            $table->foreign('lead_id')->references('id')->on('leads')->onDelete('cascade');
         });
     }
 

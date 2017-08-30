@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,17 @@ use Illuminate\Http\Request;
 */
 
 Route::group(['prefix'=>'v1'], function(){
+
+    // LOGIN
+    Route::get('/login', function () {
+        if(Auth::check() === true){
+            return "logged in";
+        }
+        return view('auth.login');
+    });
+
+    Auth::routes();
+
 	// MANAGERS
 	Route::get('view-managers','UsersController@viewManagers');
 	Route::get('user-empty-form-show', 'UsersController@userEmptyFormShow');
@@ -28,6 +40,13 @@ Route::group(['prefix'=>'v1'], function(){
 	Route::get('view-leads','LeadsController@viewLeads');
 	Route::get('lead-empty-form-show','LeadsController@leadEmptyFormShow');
 	Route::post('store-lead','LeadsController@storeLead');
+
+
+	//test
+    Route::get('test',function(){
+        var_dump(Auth::check());
+    });
+
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

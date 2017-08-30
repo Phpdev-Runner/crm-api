@@ -6,7 +6,7 @@
  * Time: 17:34
  */
 return [
-	//thinks twice before changing roles values
+	//think twice before changing roles values
 	'roles' => [
 		'admin'=>'admin',
 		'manager' => 'manager',
@@ -25,5 +25,11 @@ return [
 		'cat2'=>'cat2',
 		'cat3'=>'cat3',
 		'cat4'=>'cat4'
-	]
+	],
+
+    'communication_channel' => [
+        'email'=>'email',
+        'skype'=>'skype',
+        'facebook'=>'facebook'
+    ]
 ];

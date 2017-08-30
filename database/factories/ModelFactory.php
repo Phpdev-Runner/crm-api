@@ -59,3 +59,19 @@ $factory->define(App\Lead::class, function(Faker\Generator $faker){
 		'responsive'=>rand(0,1)
 	];
 });
+
+$factory->define(\App\Domain::class, function(Faker\Generator $faker){
+
+    $leadIDs = DB::table('leads')->get();
+
+    $leadIDsArray = [];
+
+    foreach ($leadIDs AS $key=>$value){
+        $leadIDsArray[] = $value->id;
+    }
+
+    return [
+        'lead_id' => $leadIDsArray[array_rand($leadIDsArray,1)],
+        'value' => $faker->unique()->domainName,
+    ];
+});

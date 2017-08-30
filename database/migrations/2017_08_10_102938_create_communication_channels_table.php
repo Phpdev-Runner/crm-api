@@ -18,6 +18,19 @@ class CreateCommunicationChannelsTable extends Migration
             $table->string('name');
             $table->timestamps();
         });
+
+        $communicationChannels = config('constants.communication_channel');
+
+        $communicationChannelsArray = [];
+
+        foreach($communicationChannels AS $key=>$value){
+            $communicationChannelsArray[] = [
+                'name' => $value,
+                'created_at'=>\Carbon\Carbon::now(),
+                'updated_at'=>\Carbon\Carbon::now()
+            ];
+        }
+        DB::table('communication_channels')->insert($communicationChannelsArray);
     }
 
     /**
