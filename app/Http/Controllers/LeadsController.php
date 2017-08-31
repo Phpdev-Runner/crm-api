@@ -6,6 +6,7 @@ use App\ApplicationType;
 use App\CommunicationChannel;
 use App\CommunicationValue;
 use App\Domain;
+use App\Http\Requests\StoreLeadPost;
 use App\Lead;
 use App\LeadCategory;
 use App\Transformers\CreateLeadTransformer;
@@ -16,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
 use Validator;
+
 
 class LeadsController extends ApiController
 {
@@ -73,23 +75,9 @@ class LeadsController extends ApiController
     /**
      * save new lead
      */
-	public function storeLead(Request $request)
+	public function storeLead(StoreLeadPost $request)
 	{
-        //call validator
-        $validator = Validator::make($request->all(), [
-            'category_id' => 'required|integer|min:1',
-            'application_id' => 'required|integer|min:1',
-            'assignee_id' => 'required|integer|min:1',
-            'name' => 'required|string',
-            'responsive' => 'required|integer|digits_between:0,1',
-            'domains'
-        ]);
-
-        //manually do redirect back with errors and old input
-        if ($validator->fails()) {
-            $message = $validator->errors()->all();
-            return $this->respondValidationFailed($message);
-        }
+		dd("OK!");
 
 		$categoryID = Input::get('category_id');
 		$applicationID = Input::get('application_id');
@@ -99,10 +87,6 @@ class LeadsController extends ApiController
 		$responsive = Input::get('responsive');
 		$domains = json_decode(Input::get('domains'),true);
 		$contacts = json_decode(Input::get('contacts'), true);
-
-        if(!$categoryID || !$applicationID || !$creatorID || !$assigneeID || !$name || !$responsive || !$domains ){
-            return $this->respondBadRequest('Lead registration fields did not passed validation');
-        }
 
         $duplicateDomains = $this->checkDomainDuplicates($domains);
 
@@ -119,7 +103,7 @@ class LeadsController extends ApiController
         $leadData = [
             'category_id' => $categoryID,
             'application_type_id' => $applicationID,
-            'creator_id' => $categoryID,
+            'creator_id' => $creatorID,
             'assignee_id' => $assigneeID,
             'name' => $name,
             'responsive' => $responsive

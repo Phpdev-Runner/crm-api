@@ -39,7 +39,7 @@ Route::group(['prefix'=>'v1'], function(){
 	// LEADS
 	Route::get('view-leads','LeadsController@viewLeads');
 	Route::get('lead-empty-form-show','LeadsController@leadEmptyFormShow');
-	Route::post('store-lead','LeadsController@storeLead');
+	Route::any('store-lead','LeadsController@storeLead');
 	Route::get('edit-lead/{id}', 'LeadsController@editLead');
 	Route::post('update-lead/{id}', 'LeadsController@updateLead');
 
