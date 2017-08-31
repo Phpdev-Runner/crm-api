@@ -9,6 +9,8 @@
 namespace App\Transformers;
 
 
+use App\CommunicationChannel;
+
 class LeadTransformer extends Transformer
 {
 	public function transformMany($lead)
@@ -17,6 +19,15 @@ class LeadTransformer extends Transformer
         $domains = [];
         foreach ($lead['domains'] AS $key=>$domainData){
             $domains[] = $domainData['value'];
+        }
+
+        $contacts = [];
+        foreach ($lead['communication_values'] AS $key=>$communicationData){
+            $contacts[] = [
+                'channel_id' => $communicationData['channel_id'],
+                'channel_name' => CommunicationChannel::find($communicationData['channel_id'])->name,
+                'value' => $communicationData['value']
+            ];
         }
 
 		return [
@@ -33,17 +44,28 @@ class LeadTransformer extends Transformer
 			'assignee_id'=>$lead['assignee_id'],
 			'assignee_name'=>$lead['assignee']['name'],
 			'assignee_email'=>$lead['assignee']['email'],
-            'domains'=>$domains
+            'domains'=>$domains,
+            'contacts'=>$contacts
 		];
 	}
 	
 	public function transformOne($lead)
 	{
-		//		dd($lead);
+//		dd($lead);
         $domains = [];
         foreach ($lead['domains'] AS $key=>$domainData){
             $domains[] = $domainData['value'];
         }
+
+        $contacts = [];
+        foreach ($lead['communication_values'] AS $key=>$communicationData){
+            $contacts[] = [
+                'channel_id' => $communicationData['channel_id'],
+                'channel_name' => CommunicationChannel::find($communicationData['channel_id'])->name,
+                'value' => $communicationData['value']
+            ];
+        }
+
 		return [
 			'id'=>$lead['id'],
 			'name'=>$lead['name'],
@@ -58,7 +80,8 @@ class LeadTransformer extends Transformer
 			'assignee_id'=>$lead['assignee_id'],
 			'assignee_name'=>$lead['assignee']['name'],
 			'assignee_email'=>$lead['assignee']['email'],
-            'domains'=>$domains
+            'domains'=>$domains,
+            'contacts'=>$contacts
 		];
 	}
 }

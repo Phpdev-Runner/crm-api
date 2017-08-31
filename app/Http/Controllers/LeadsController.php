@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\ApplicationType;
+use App\CommunicationChannel;
+use App\CommunicationValue;
 use App\Domain;
 use App\Lead;
 use App\LeadCategory;
 use App\Transformers\CreateLeadTransformer;
 use App\Transformers\LeadTransformer;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
@@ -53,10 +56,13 @@ class LeadsController extends ApiController
 		$leadCategories = $this->getLeadCategories();
 		$leadApplicationTypes = $this->getApplicationTypes();
 		$assignees = $this->getAssignees();
+		$communicationChannels = $this->getCommunicationChannels();
+
 		$createNewLeadFormData = [
 			'lead_categories'=>$leadCategories,
 			'application_types'=>$leadApplicationTypes,
-            'assignees'=>$assignees
+            'assignees'=>$assignees,
+            'communication_channels'=>$communicationChannels
 		];
 		$createNewLeadFormData = $this->createLeadTransformer->transformDataForEmptyForm($createNewLeadFormData);
 
@@ -75,15 +81,22 @@ class LeadsController extends ApiController
 		$name = Input::get('name');
 		$responsive = Input::get('responsive');
 		$domains = json_decode(Input::get('domains'),true);
+		$contacts = json_decode(Input::get('contacts'), true);
 
-        if(!$categoryID || !$applicationID || !$creatorID || !$assigneeID || !$name || !$responsive || !$domains){
+        if(!$categoryID || !$applicationID || !$creatorID || !$assigneeID || !$name || !$responsive || !$domains ){
             return $this->respondBadRequest('Lead registration fields did not passed validation');
         }
 
-        $duplicateDomains = $this->checkEmailDuplicates($domains);
+        $duplicateDomains = $this->checkDomainDuplicates($domains);
 
         if($duplicateDomains !== false){
             return $this->respondDataConflict("Provided domains ( {$duplicateDomains} ) are already registered in the system");
+        }
+
+        $duplicatedEmails = $this->checkEmailDuplicates($contacts);
+
+        if($duplicatedEmails !== false){
+            return $this->respondDataConflict("Provided emails ( {$duplicatedEmails} ) are already binded with other leads");
         }
 
         $leadData = [
@@ -98,6 +111,8 @@ class LeadsController extends ApiController
         $lead = $this->saveLead($leadData);
 
         $this->saveDomains($lead->id, $domains);
+
+        $this->saveCommunicationValues($lead->id, $contacts);
 
         return $this->respondCreated("new lead successfully created!");
 	}
@@ -170,6 +185,19 @@ class LeadsController extends ApiController
 		return $applicationTypesArray;
 	}
 
+	private function getCommunicationChannels()
+    {
+        $communicationChannels = CommunicationChannel::getCommunicationChannels();
+        $communicationChannelsArray = [];
+        foreach ($communicationChannels->toArray() AS $key=>$data){
+            $communicationChannelsArray[] = [
+                'id' => $data['id'],
+                'name' => $data['name']
+            ];
+        }
+        return $communicationChannelsArray;
+    }
+
 	private function getAssignees()
     {
         $assignees = User::getUsersWithRoles([
@@ -180,11 +208,26 @@ class LeadsController extends ApiController
         return $assignees;
     }
 
-    private function checkEmailDuplicates(array $domains)
+    private function checkDomainDuplicates(array $domains)
     {
         $duplicatesDomains = Domain::checkDomainDuplicates($domains);
 
         return $duplicatesDomains;
+    }
+
+    private function checkEmailDuplicates(array $contacts)
+    {
+        $emailFieldName = config('constants.communication_channel.email');
+
+        $emailsArray = [];
+        foreach ($contacts AS $key=>$data){
+            if(array_key_exists($emailFieldName,$data)){
+                $emailsArray[] = $data[$emailFieldName];
+            }
+        }
+        $duplicatedEmails = CommunicationValue::checkEmailDuplicates($emailsArray);
+
+        return $duplicatedEmails;
     }
 
     private function saveLead($leadData)
@@ -194,7 +237,7 @@ class LeadsController extends ApiController
         return $lead;
     }
 
-    private function saveDomains($leadID, array $domains)
+    private function saveDomains(int $leadID, array $domains)
     {
         foreach ($domains AS $domain){
             $domainData = [
@@ -204,6 +247,33 @@ class LeadsController extends ApiController
             $domain = Domain::create($domainData);
         }
         return $domain;
+    }
+
+    private function saveCommunicationValues(int $leadID, array $commValues)
+    {
+        $commChannels = CommunicationChannel::all()->toArray();
+        $commChannelsArray = [];
+        foreach ($commChannels AS $key=>$value){
+            $commChannelsArray[$value['id']] = $value['name'];
+        }
+
+        $rowsToStore = [];
+        foreach ($commValues AS $key=>$data){
+
+            foreach ($data AS $chanelName=>$chanelValue){
+                if($key = array_search($chanelName,$commChannelsArray)){
+                    $rowsToStore[] = [
+                        'lead_id'=>$leadID,
+                        'channel_id'=> $key,
+                        'value'=> $data[$chanelName],
+                        'created_at'=>Carbon::now(),
+                        'updated_at'=>Carbon::now(),
+                    ];
+                }
+            }
+        }
+        CommunicationValue::insert($rowsToStore);
+
     }
 
 	#endregion

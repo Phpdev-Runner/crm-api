@@ -14,7 +14,18 @@ class CommunicationChannel extends Model
     #endregion
 
     #region MAIN METHODS
+    public static function getCommunicationChannels()
+    {
+        return self::all();
+    }
 
+    public static function getChannelID(string $name)
+    {
+        return self::where('name','=',$name)->first()->id;
+    }
+    #endregion
+
+    #region RELATION METHODS
     public function communicationValues()
     {
         return $this->hasMany(CommunicationValue::class);

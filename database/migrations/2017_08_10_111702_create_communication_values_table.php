@@ -19,7 +19,7 @@ class CreateCommunicationValuesTable extends Migration
             $table->integer('channel_id')->unsigned();
             $table->string('value');
             $table->timestamps();
-            $table->foreign('lead_id')->references('id')->on('leads');
+            $table->foreign('lead_id')->references('id')->on('leads')->onDelete('cascade');
             $table->foreign('channel_id')->references('id')->on('communication_channels');
         });
     }

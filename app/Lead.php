@@ -24,11 +24,13 @@ class Lead extends Model
 	#region MAIN METHODS
 	public static function viewAllLeads()
 	{
-		$allLeads = self::with('leadCategory')->
-			with('applicationType')->
-			with('creator')->
-			with('assignee')->
-            with('domains')->get();
+		$allLeads = self::with('leadCategory')
+            ->with('applicationType')
+            ->with('creator')
+            ->with('assignee')
+            ->with('domains')
+            ->with('communicationValues')
+            ->get();
 		return $allLeads;
 	}
 
@@ -38,7 +40,9 @@ class Lead extends Model
             ->with('applicationType')
             ->with('creator')
             ->with('assignee')
-            ->with('domains')->find($id);
+            ->with('domains')
+            ->with('communicationValues')
+            ->find($id);
         return $lead;
     }
 	#endregion
