@@ -27,6 +27,11 @@ class ApiController extends Controller {
 	{
 		return $this->setStatusCode(404)->respondWithError($message);
 	}
+
+	public function respondValidationFailed($message = "")
+    {
+        return $this->setStatusCode(422)->respondWithError($message);
+    }
 	
 	public function respondBadRequest($message = 'Bad Request')
 	{

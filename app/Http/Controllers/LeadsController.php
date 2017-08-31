@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
+use Validator;
 
 class LeadsController extends ApiController
 {
@@ -72,8 +73,24 @@ class LeadsController extends ApiController
     /**
      * save new lead
      */
-	public function storeLead()
+	public function storeLead(Request $request)
 	{
+        //call validator
+        $validator = Validator::make($request->all(), [
+            'category_id' => 'required|integer|min:1',
+            'application_id' => 'required|integer|min:1',
+            'assignee_id' => 'required|integer|min:1',
+            'name' => 'required|string',
+            'responsive' => 'required|integer|digits_between:0,1',
+            'domains'
+        ]);
+
+        //manually do redirect back with errors and old input
+        if ($validator->fails()) {
+            $message = $validator->errors()->all();
+            return $this->respondValidationFailed($message);
+        }
+
 		$categoryID = Input::get('category_id');
 		$applicationID = Input::get('application_id');
 		$creatorID =  Auth::id();
