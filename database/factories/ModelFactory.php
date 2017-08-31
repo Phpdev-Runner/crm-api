@@ -83,10 +83,19 @@ $factory->define(\App\Domain::class, function(Faker\Generator $faker){
 /**
  * COMMUNICATION VALUES
  */
-$factory->define(\App\CommunicationValue::class, function(){
+$factory->define(\App\CommunicationValue::class, function(\Faker\Generator $faker){
+
     // get Lead IDs
     $leadIDsArray = getLeadsIDs();
 
+    // get communicationsChannels IDs
+    $communicationsChannelsIDsArray = getCommunicationChannelsIDs();
+
+    return [
+        'lead_id' => $leadIDsArray[array_rand($leadIDsArray,1)],
+        'channel_id' => $communicationsChannelsIDsArray[array_rand($communicationsChannelsIDsArray,1)],
+        'value' => $faker->unique()->safeEmail
+    ];
 });
 
 
@@ -99,6 +108,16 @@ function getLeadsIDs()
         $leadIDsArray[] = $value->id;
     }
     return $leadIDsArray;
+}
+
+function getCommunicationChannelsIDs()
+{
+    $communicationChannelsIDs = DB::table('communication_channels')->get();
+    $communicationChannelsIDsArray = [];
+    foreach ($communicationChannelsIDs AS $key=>$value){
+        $communicationChannelsIDsArray[] = $value->id;
+    }
+    return $communicationChannelsIDsArray;
 }
 #endregion
 

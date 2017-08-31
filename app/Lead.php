@@ -41,7 +41,9 @@ class Lead extends Model
             ->with('domains')->find($id);
         return $lead;
     }
-	
+	#endregion
+
+    #region RELATION METHODS
 	public function leadCategory()
 	{
 		return $this->belongsTo(LeadCategory::class,'category_id','id');
@@ -65,6 +67,11 @@ class Lead extends Model
 	public function domains()
     {
         return $this->hasMany(Domain::class);
+    }
+
+    public function communicationValues()
+    {
+        return $this->hasMany(CommunicationValue::class);
     }
 	#endregion
 	

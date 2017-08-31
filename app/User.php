@@ -53,7 +53,9 @@ class User extends Authenticatable
 			return true;
 		}
 	}
-	
+	#endregion
+
+    #region RELATION METHODS
 	public function role()
 	{
 		return $this->belongsTo(Role::class);
