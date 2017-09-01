@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\Auth;
 
 class StoreLeadPost extends FormRequest
 {
+    use ResponseTrait;
 	
 	/**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
+     * @todo finish authorization
      */
     public function authorize()
     {
@@ -25,8 +25,7 @@ class StoreLeadPost extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
+     * @todo finish validation
      */
     public function rules()
     {
@@ -39,17 +38,4 @@ class StoreLeadPost extends FormRequest
 //            'domains'
         ];
     }
-	
-	public function response(array $errors) {
-		
-		$message = [];
-		foreach ($errors AS $field=>$data){
-			foreach ($data AS $key=>$text){
-				$message[] = $text;
-			}
-		}
-    	$api = new ApiController();
-		
-		return $api->respondValidationFailed($message);
-	}
 }

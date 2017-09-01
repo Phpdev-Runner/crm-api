@@ -13,7 +13,8 @@
 
 Route::get('/', function () {
 	if(Auth::check() === true){
-		return "logged in";
+        $userName = Auth::user()->name;
+        return "logged in as {$userName}!";
 	}
     return view('auth.login');
 });

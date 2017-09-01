@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserPost;
+use App\Http\Requests\UpdateUserPost;
 use App\Role;
 use App\User;
 use App\Transformers\UserTransformer;
@@ -68,18 +70,15 @@ class UsersController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function storeManager(Request $request)
+    public function storeManager(StoreUserPost $request)
     {
 	    $name = Input::get('name');
 	    $email = Input::get('email');
 	    $role_id = Input::get('role_id');
 	    $role_id = ($role_id === null)? Role::unauthorizedRoleId():$role_id;
 	    $password = bcrypt(Input::get('password'));
-	    
-	    if(!$name || !$email || !$role_id || !$password){
-	    	return $this->respondBadRequest('user registration fields did not passed validation');
-	    }
-		
+
+	    //@todo remove it since we can do it through validation now
 	    if($this->checkNewEmailDuplicatePresence(Input::get('email')=== true)){
 		    return $this->respondBadRequest("Another user with email ".Input::get('email')." exists in DB!");
 	    }
@@ -116,7 +115,7 @@ class UsersController extends ApiController
 	/**
 	 * + Update the specified resource in storage.
 	 */
-	public function updateManager($id)
+	public function updateManager(UpdateUserPost $request, $id)
 	{
 		$manager = $this->findUser($id);
 		

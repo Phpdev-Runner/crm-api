@@ -77,8 +77,6 @@ class LeadsController extends ApiController
      */
 	public function storeLead(StoreLeadPost $request)
 	{
-		dd("OK!");
-
 		$categoryID = Input::get('category_id');
 		$applicationID = Input::get('application_id');
 		$creatorID =  Auth::id();

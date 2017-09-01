@@ -18,9 +18,6 @@ Route::group(['prefix'=>'v1'], function(){
 
     // LOGIN
     Route::get('/login', function () {
-        if(Auth::check() === true){
-            return "logged in";
-        }
         return view('auth.login');
     });
 

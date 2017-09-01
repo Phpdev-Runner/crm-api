@@ -8,8 +8,20 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Controllers\ApiController;
 
-class ResponseTrait
+trait ResponseTrait
 {
+    public function response(array $errors) {
 
+        $message = [];
+        foreach ($errors AS $field=>$data){
+            foreach ($data AS $key=>$text){
+                $message[] = $text;
+            }
+        }
+        $api = new ApiController();
+
+        return $api->respondValidationFailed($message);
+    }
 }
