@@ -42,6 +42,11 @@ class ApiController extends Controller {
     {
         return $this->setStatusCode(409)->respondWithError($message);
     }
+
+    public function respondActionForbidden($message = 'You are not authorized to perform such action')
+    {
+        return $this->setStatusCode(403)->respondWithError($message);
+    }
 	
 	public function respondCreated($message)
 	{

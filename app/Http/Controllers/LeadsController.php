@@ -163,6 +163,24 @@ class LeadsController extends ApiController
             return $this->respondDataConflict("Due to unknown reason Lead was not updated!");
         }
     }
+
+    /**
+     * delete Lead
+     */
+    public function deleteLead($leadID)
+    {
+        $lead = Lead::find($leadID);
+        if($lead == null){
+            return $this->respondNoContent("Lead with requested ID {$leadID} was not found!");
+        }
+
+        if(Auth::check() && Auth::user()->authHasRole() == config('constants.roles.admin')){
+            $lead->delete();
+            return $this->respondDeleted("Lead with ID ". $lead->id ." was successfully deleted!");
+        }else{
+            return $this->respondActionForbidden("Only Admin can delete Leads! You are not authorized!");
+        }
+    }
 	#endregion
 	
 	#region SERVICE METHODS

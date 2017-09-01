@@ -29,7 +29,7 @@ Route::group(['prefix'=>'v1'], function(){
 	Route::post('store-manager','UsersController@storeManager');
 	Route::get('edit-manager/{id}','UsersController@editManager');
 	Route::post('update-manager/{id}','UsersController@updateManager');
-	Route::post('delete-manager/{id}', 'UsersController@deleteManager');
+	Route::get('delete-manager/{id}', 'UsersController@deleteManager');
 	
 	Route::post('invite-manager','UsersController@inviteManager');
 	
@@ -39,6 +39,7 @@ Route::group(['prefix'=>'v1'], function(){
 	Route::post('store-lead','LeadsController@storeLead');
 	Route::get('edit-lead/{id}', 'LeadsController@editLead');
 	Route::post('update-lead/{id}', 'LeadsController@updateLead');
+	Route::get('delete-lead/{id}', 'LeadsController@deleteLead');
 
 
 	//test
