@@ -123,10 +123,6 @@ class UsersController extends ApiController
 			return $this->respondNoContent("There is no user with ID {$id}");
 		}
 		
-		if(!Input::get('name') || !Input::get('email') || !Input::get('role_id')){
-			return $this->respondBadRequest("Some input data missing needed to update manager");
-		}
-		
 		if($this->checkNewEmailDuplicatePresence(Input::get('email'), $manager->id) === true){
 			return $this->respondBadRequest("Another user with email ".Input::get('email')." exists in DB!");
 		}

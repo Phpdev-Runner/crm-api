@@ -35,6 +35,11 @@ class CommunicationValue extends Model
         }
 
     }
+
+    public static function deletePreviouslyAddedCommunicationValues(int $leadID)
+    {
+        return false;
+    }
     #endregion
 
     #region RELATION METHODS

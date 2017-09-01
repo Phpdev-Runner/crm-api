@@ -33,7 +33,7 @@ class StoreLeadPost extends FormRequest
             'category_id' => 'required|integer|min:1',
             'application_id' => 'required|integer|min:1',
             'assignee_id' => 'required|integer|min:1',
-            'name' => 'required|string',
+            'name' => 'required|string|min:6',
             'responsive' => 'required|integer|digits_between:0,1',
 //            'domains'
         ];

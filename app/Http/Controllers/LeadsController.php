@@ -7,6 +7,7 @@ use App\CommunicationChannel;
 use App\CommunicationValue;
 use App\Domain;
 use App\Http\Requests\StoreLeadPost;
+use App\Http\Requests\UpdateLeadPost;
 use App\Lead;
 use App\LeadCategory;
 use App\Transformers\CreateLeadTransformer;
@@ -77,12 +78,7 @@ class LeadsController extends ApiController
      */
 	public function storeLead(StoreLeadPost $request)
 	{
-		$categoryID = Input::get('category_id');
-		$applicationID = Input::get('application_id');
-		$creatorID =  Auth::id();
-		$assigneeID = Input::get('assignee_id');
-		$name = Input::get('name');
-		$responsive = Input::get('responsive');
+
 		$domains = json_decode(Input::get('domains'),true);
 		$contacts = json_decode(Input::get('contacts'), true);
 
@@ -99,21 +95,23 @@ class LeadsController extends ApiController
         }
 
         $leadData = [
-            'category_id' => $categoryID,
-            'application_type_id' => $applicationID,
-            'creator_id' => $creatorID,
-            'assignee_id' => $assigneeID,
-            'name' => $name,
-            'responsive' => $responsive
+            'category_id' => Input::get('category_id'),
+            'application_type_id' => Input::get('application_id'),
+            'creator_id' => Auth::id(),
+            'assignee_id' => Input::get('assignee_id'),
+            'name' => Input::get('name'),
+            'responsive' => Input::get('responsive')
         ];
 
         $lead = $this->saveLead($leadData);
 
-        $this->saveDomains($lead->id, $domains);
-
-        $this->saveCommunicationValues($lead->id, $contacts);
-
-        return $this->respondCreated("new lead successfully created!");
+        if(isset($lead->id) && $lead->id >0){
+            $this->saveDomains($lead->id, $domains);
+            $this->saveCommunicationValues($lead->id, $contacts);
+            return $this->respondCreated("new lead successfully created!");
+        }else{
+            return $this->respondDataConflict("Due to unknown reason Lead was not saved!");
+        }
 	}
 
     /**
@@ -134,7 +132,7 @@ class LeadsController extends ApiController
     /**
      * update lead
      */
-    public function updateLead($id)
+    public function updateLead(UpdateLeadPost $request, $id)
     {
         $lead = $this->findLead($id);
 
@@ -142,8 +140,28 @@ class LeadsController extends ApiController
             return $this->respondNoContent("Lead with ID {$id} does not exists!");
         }
 
-        exit("OK!");
+        $domains = json_decode(Input::get('domains'),true);
+        $contacts = json_decode(Input::get('contacts'), true);
 
+        $leadData = [
+            'category_id'=> Input::get('category_id'),
+            'application_type_id'=> Input::get('application_id'),
+            'assignee_id' => Input::get('assignee_id'),
+            'name' => Input::get('name'),
+            'responsive' => Input::get('responsive')
+        ];
+
+        $updateLeadStatus = $lead->update($leadData);
+
+        if($updateLeadStatus === true){
+            // update domains
+            $this->updateDomains($lead->id, $domains);
+            // update contacts
+            $this->updateCommunicationValues($lead->id, $contacts);
+            return $this->respondUpdated("Domains and Contacts info for lead updated!");
+        }else{
+            return $this->respondDataConflict("Due to unknown reason Lead was not updated!");
+        }
     }
 	#endregion
 	
@@ -238,17 +256,69 @@ class LeadsController extends ApiController
 
     private function saveDomains(int $leadID, array $domains)
     {
-        foreach ($domains AS $domain){
-            $domainData = [
-                'lead_id' => $leadID,
-                'value' => $domain
-            ];
-            $domain = Domain::create($domainData);
+        $rowsToStore = $this->prepareDataForDomains($leadID,$domains);
+        $insertStatus = Domain::insert($rowsToStore);
+        return $insertStatus;
+    }
+
+    private function updateDomains(int $leadID, array $domains)
+    {
+        //delete previously added domains
+        $deletedQty = Domain::deletePreviouslyAddedDomains($leadID);
+
+        //insert new domains
+        $rowsToStore = $this->prepareDataForDomains($leadID,$domains);
+        $insertStatus = Domain::insert($rowsToStore);
+
+        if($deletedQty > 0 && $insertStatus == true){
+            return true;
+        }else{
+            return false;
         }
-        return $domain;
+    }
+
+    private function prepareDataForDomains(int $leadID, array $domains)
+    {
+        $domainData = [];
+        foreach ($domains AS $domain){
+            $domainData[] = [
+                'lead_id' => $leadID,
+                'value' => $domain,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ];
+        }
+        return $domainData;
     }
 
     private function saveCommunicationValues(int $leadID, array $commValues)
+    {
+        $rowsToStore = $this->prepareDataForCommunicationValues($leadID,$commValues);
+
+        $insertStatus = CommunicationValue::insert($rowsToStore);
+
+        return $insertStatus;
+
+    }
+
+    private function updateCommunicationValues(int $leadID, array $commValues)
+    {
+        // delete previously added communication values
+        $deletedQTY = CommunicationValue::deletePreviouslyAddedCommunicationValues($leadID);
+
+        // insert new communication values
+        $rowsToStore = $this->prepareDataForCommunicationValues($leadID,$commValues);
+
+        $insertStatus = CommunicationValue::insert($rowsToStore);
+
+        if($deletedQTY >= 0 && $insertStatus == true){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    private function prepareDataForCommunicationValues(int $leadID, array $commValues)
     {
         $commChannels = CommunicationChannel::all()->toArray();
         $commChannelsArray = [];
@@ -271,8 +341,7 @@ class LeadsController extends ApiController
                 }
             }
         }
-        CommunicationValue::insert($rowsToStore);
-
+        return $rowsToStore;
     }
 
 	#endregion

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -37,6 +38,15 @@ class Domain extends Model
         }
     }
 
+    public static function deletePreviouslyAddedDomains(int $leadID)
+    {
+        $deletedQTY = self::where('lead_id','=',$leadID)->delete();
+        return $deletedQTY;
+    }
+
+    #endregion
+
+    #region RELATION METHODS
     public function lead()
     {
         return $this->belongsTo(Lead::class);
