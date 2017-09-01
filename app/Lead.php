@@ -77,6 +77,12 @@ class Lead extends Model
     {
         return $this->hasMany(CommunicationValue::class);
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
 	#endregion
 	
 	#region SERVICE METHODS

@@ -32,11 +32,6 @@ class User extends Authenticatable
 		return $users;
 	}
 	
-	public function authHasRole()
-	{
-		return Auth::user()->role->name;
-	}
-	
 	public static function checkNewEmailDuplicate($newEmail, $userID)
 	{
 		if($userID != null){
@@ -53,6 +48,20 @@ class User extends Authenticatable
 			return true;
 		}
 	}
+
+    public static function getRolesIDs(array $roles)
+    {
+        foreach ($roles AS $key=>$role){
+            $roles[$key] = Role::where('name','=',$role)->first()->id;
+        }
+        return $roles;
+    }
+
+    public function authHasRole()
+    {
+        return Auth::user()->role->name;
+    }
+
 	#endregion
 
     #region RELATION METHODS
@@ -60,14 +69,11 @@ class User extends Authenticatable
 	{
 		return $this->belongsTo(Role::class);
 	}
-	
-	public static function getRolesIDs(array $roles)
-	{
-		foreach ($roles AS $key=>$role){
-			$roles[$key] = Role::where('name','=',$role)->first()->id;
-		}
-		return $roles;
-	}
+
+	public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 	#endregion
 	
 	#region SERVICE METHODS

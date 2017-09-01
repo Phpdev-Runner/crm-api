@@ -42,6 +42,9 @@ Route::group(['prefix'=>'v1'], function(){
 	Route::get('delete-lead/{id}', 'LeadsController@deleteLead');
 
 
+	// COMMENTS
+
+
 	//test
     Route::get('test',function(){
         var_dump(Auth::check());
