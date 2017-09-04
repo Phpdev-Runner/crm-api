@@ -42,6 +42,8 @@ class Lead extends Model
             ->with('assignee')
             ->with('domains')
             ->with('communicationValues')
+            ->with('comments')
+            ->with('communicationRecords')
             ->find($id);
         return $lead;
     }
@@ -77,6 +79,17 @@ class Lead extends Model
     {
         return $this->hasMany(CommunicationValue::class);
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function communicationRecords()
+    {
+        return $this->hasMany(CommunicationRecord::class);
+    }
+
 	#endregion
 	
 	#region SERVICE METHODS

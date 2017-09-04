@@ -23,12 +23,22 @@ class CommunicationChannel extends Model
     {
         return self::where('name','=',$name)->first()->id;
     }
+
+    public static function getChannelNameById(int $id)
+    {
+        return self::find($id)->name;
+    }
     #endregion
 
     #region RELATION METHODS
     public function communicationValues()
     {
         return $this->hasMany(CommunicationValue::class);
+    }
+
+    public function communicationRecords()
+    {
+        return $this->hasMany(CommunicationRecord::class);
     }
     #endregion
 

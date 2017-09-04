@@ -35,25 +35,15 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 $factory->define(App\Lead::class, function(Faker\Generator $faker){
 
 	//get application types IDs
-	$applicationTypeIDs = DB::table('application_types')->get();
-	$applicationTypesIDsArray = [];
-	foreach ($applicationTypeIDs AS $key=>$value){
-		$applicationTypesIDsArray[] = $value->id;
-	}
+    $applicationTypesIDsArray = getApplicationsIDs();
+
 
 	//get lead categories IDs
-	$leadCategoriesIDs = DB::table('lead_categories')->get();
-	$leadCategoriesIDsArray = [];
-	foreach($leadCategoriesIDs AS $key=>$value){
-		$leadCategoriesIDsArray[] = $value->id;
-	}
+    $leadCategoriesIDsArray = getCategoriesIDs();
 
 	// get User IDs
-	$userIDs = DB::table('users')->get();
-	$userIDsArray = [];
-	foreach($userIDs AS $key=>$value){
-		$userIDsArray[] = $value->id;
-	}
+    $userIDsArray = getUsersIDs();
+
 
 	//get application
 	return [
@@ -98,8 +88,78 @@ $factory->define(\App\CommunicationValue::class, function(\Faker\Generator $fake
     ];
 });
 
+/**
+ * COMMENTS
+ */
+$factory->define(\App\Comment::class, function(\Faker\Generator $faker){
+    // get User IDs
+    $userIDsArray = getUsersIDs();
+
+    // get Lead IDs
+    $leadIDsArray = getLeadsIDs();
+
+    return [
+        'user_id' => $userIDsArray[array_rand($userIDsArray,1)],
+        'lead_id' => $leadIDsArray[array_rand($leadIDsArray,1)],
+        'comment' => $faker->text($maxNbChars = 120)
+    ];
+
+});
+
+/**
+ * COMMUNICATION RECORDS
+ */
+$factory->define(\App\CommunicationRecord::class, function(\Faker\Generator $faker){
+
+    // get communicationsChannels IDs
+    $communicationsChannelsIDsArray = getCommunicationChannelsIDs();
+
+    // get Lead IDs
+    $leadIDsArray = getLeadsIDs();
+
+    // get User IDs
+    $userIDsArray = getUsersIDs();
+
+    return [
+        'channel_id' => $communicationsChannelsIDsArray[array_rand($communicationsChannelsIDsArray,1)],
+        'lead_id' =>  $leadIDsArray[array_rand($leadIDsArray,1)],
+        'user_id' => $userIDsArray[array_rand($userIDsArray,1)],
+        'value' => $faker->sentence($nbWords = 3, $variableNbWords = true)." - ".$faker->e164PhoneNumber
+    ];
+});
 
 #region SERVICE METHODS
+function getApplicationsIDs()
+{
+    $applicationTypeIDs = DB::table('application_types')->get();
+    $applicationTypesIDsArray = [];
+    foreach ($applicationTypeIDs AS $key=>$value){
+        $applicationTypesIDsArray[] = $value->id;
+    }
+
+    return $applicationTypesIDsArray;
+}
+
+function getCategoriesIDs()
+{
+    $leadCategoriesIDs = DB::table('lead_categories')->get();
+    $leadCategoriesIDsArray = [];
+    foreach($leadCategoriesIDs AS $key=>$value){
+        $leadCategoriesIDsArray[] = $value->id;
+    }
+    return $leadCategoriesIDsArray;
+}
+
+function getUsersIDs()
+{
+    $userIDs = DB::table('users')->get();
+    $userIDsArray = [];
+    foreach($userIDs AS $key=>$value){
+        $userIDsArray[] = $value->id;
+    }
+    return $userIDsArray;
+}
+
 function getLeadsIDs()
 {
     $leadIDs = DB::table('leads')->get();
@@ -119,5 +179,6 @@ function getCommunicationChannelsIDs()
     }
     return $communicationChannelsIDsArray;
 }
+
 #endregion
 

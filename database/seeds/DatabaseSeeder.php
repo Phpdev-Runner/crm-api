@@ -22,5 +22,9 @@ class DatabaseSeeder extends Seeder
         $this->call(DomainsTableSeeder::class);
 
         $this->call(CommunicationValuesTableSeeder::class);
+
+        $this->call(CommentsTableSeeder::class);
+
+        $this->call(CommunicationRecordsTableSeeder::class);
     }
 }
