@@ -106,6 +106,28 @@ $factory->define(\App\Comment::class, function(\Faker\Generator $faker){
 
 });
 
+/**
+ * COMMUNICATION RECORDS
+ */
+$factory->define(\App\CommunicationRecord::class, function(\Faker\Generator $faker){
+
+    // get communicationsChannels IDs
+    $communicationsChannelsIDsArray = getCommunicationChannelsIDs();
+
+    // get Lead IDs
+    $leadIDsArray = getLeadsIDs();
+
+    // get User IDs
+    $userIDsArray = getUsersIDs();
+
+    return [
+        'channel_id' => $communicationsChannelsIDsArray[array_rand($communicationsChannelsIDsArray,1)],
+        'lead_id' =>  $leadIDsArray[array_rand($leadIDsArray,1)],
+        'user_id' => $userIDsArray[array_rand($userIDsArray,1)],
+        'value' => $faker->sentence($nbWords = 3, $variableNbWords = true)." - ".$faker->e164PhoneNumber
+    ];
+});
+
 #region SERVICE METHODS
 function getApplicationsIDs()
 {
@@ -157,5 +179,6 @@ function getCommunicationChannelsIDs()
     }
     return $communicationChannelsIDsArray;
 }
+
 #endregion
 

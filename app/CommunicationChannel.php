@@ -30,6 +30,11 @@ class CommunicationChannel extends Model
     {
         return $this->hasMany(CommunicationValue::class);
     }
+
+    public function communicationRecords()
+    {
+        return $this->hasMany(CommunicationRecord::class);
+    }
     #endregion
 
     #region SERVICE METHODS

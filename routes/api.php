@@ -48,6 +48,9 @@ Route::group(['prefix'=>'v1'], function(){
     Route::post('update-comment/{id}', 'CommentsController@updateComment');
     Route::get('delete-comment/{id}', 'CommentsController@deleteComment');
 
+    // COMMUNICATION RECORDS
+
+
 	//test
     Route::get('test',function(){
         var_dump(Auth::check());
