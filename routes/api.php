@@ -43,7 +43,10 @@ Route::group(['prefix'=>'v1'], function(){
 
 
 	// COMMENTS
-
+    Route::post('store-comment', 'CommentsController@storeComment');
+    Route::get('edit-comment/{id}', 'CommentsController@editComment');
+    Route::post('update-comment/{id}', 'CommentsController@updateComment');
+    Route::get('delete-comment/{id}', 'CommentsController@deleteComment');
 
 	//test
     Route::get('test',function(){

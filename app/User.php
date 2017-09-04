@@ -57,6 +57,11 @@ class User extends Authenticatable
         return $roles;
     }
 
+    public static function getUserNameById(int $id)
+    {
+	    return self::find($id)->name;
+    }
+
     public function authHasRole()
     {
         return Auth::user()->role->name;

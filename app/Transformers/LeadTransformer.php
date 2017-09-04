@@ -10,6 +10,7 @@ namespace App\Transformers;
 
 
 use App\CommunicationChannel;
+use App\User;
 
 class LeadTransformer extends Transformer
 {
@@ -66,6 +67,17 @@ class LeadTransformer extends Transformer
             ];
         }
 
+        $comments = [];
+        foreach($lead['comments'] AS $key => $commentData){
+            $comments[] = [
+                'comment_id'=>$commentData['id'],
+                'user_id' => $commentData['user_id'],
+                'user' => User::getUserNameById($commentData['user_id']),
+                'comment' => $commentData['comment'],
+                'updated_at' => $commentData['updated_at']
+            ];
+        }
+
 		return [
 			'id'=>$lead['id'],
 			'name'=>$lead['name'],
@@ -81,7 +93,8 @@ class LeadTransformer extends Transformer
 			'assignee_name'=>$lead['assignee']['name'],
 			'assignee_email'=>$lead['assignee']['email'],
             'domains'=>$domains,
-            'contacts'=>$contacts
+            'contacts'=>$contacts,
+            'comments' => $comments
 		];
 	}
 }

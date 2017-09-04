@@ -16,6 +16,11 @@ class Comment extends Model
     #endregion
 
     #region MAIN METHODS
+    public static function viewComment($id)
+    {
+        $comment = self::find($id);
+        return $comment;
+    }
     #endregion
 
     #region RELATION METHODS
