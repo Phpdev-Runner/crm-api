@@ -78,7 +78,8 @@ class LeadsController extends ApiController
      */
 	public function storeLead(StoreLeadPost $request)
 	{
-
+		var_dump(Input::get('domains'));
+		dd("OK!");
 		$domains = json_decode(Input::get('domains'),true);
 		$contacts = json_decode(Input::get('contacts'), true);
 

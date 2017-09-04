@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Controllers\ApiController;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -35,7 +34,8 @@ class StoreLeadPost extends FormRequest
             'assignee_id' => 'required|integer|min:1',
             'name' => 'required|string|min:6',
             'responsive' => 'required|integer|digits_between:0,1',
-//            'domains'
+            'domains' => 'required|array',
+//	        'domains.site' => 'distinct|url'
         ];
     }
 }
