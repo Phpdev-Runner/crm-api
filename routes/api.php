@@ -41,7 +41,6 @@ Route::group(['prefix'=>'v1'], function(){
 	Route::post('update-lead/{id}', 'LeadsController@updateLead');
 	Route::get('delete-lead/{id}', 'LeadsController@deleteLead');
 
-
 	// COMMENTS
     Route::post('store-comment', 'CommentsController@storeComment');
     Route::get('edit-comment/{id}', 'CommentsController@editComment');
@@ -49,7 +48,11 @@ Route::group(['prefix'=>'v1'], function(){
     Route::get('delete-comment/{id}', 'CommentsController@deleteComment');
 
     // COMMUNICATION RECORDS
-
+    Route::get('com-record-empty-form-show','CommunicationRecordsController@comRecordEmptyFormShow');
+    Route::post('store-com-record','CommunicationRecordsController@storeComRecord');
+    Route::get('edit-com-record/{id}','CommunicationRecordsController@editComRecord');
+    Route::post('update-com-record/{id}','CommunicationRecordsController@updateComRecord');
+    Route::get('delete-com-record/{id}','CommunicationRecordsController@deleteComRecord');
 
 	//test
     Route::get('test',function(){

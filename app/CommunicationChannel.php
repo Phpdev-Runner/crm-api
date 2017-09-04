@@ -23,6 +23,11 @@ class CommunicationChannel extends Model
     {
         return self::where('name','=',$name)->first()->id;
     }
+
+    public static function getChannelNameById(int $id)
+    {
+        return self::find($id)->name;
+    }
     #endregion
 
     #region RELATION METHODS

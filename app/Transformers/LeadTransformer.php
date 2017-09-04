@@ -78,6 +78,19 @@ class LeadTransformer extends Transformer
             ];
         }
 
+        $communicationRecords = [];
+        foreach ($lead['communication_records'] AS $key=>$communicationData){
+            $communicationRecords[] = [
+                'id'=>$communicationData['id'],
+                'channel_id' => $communicationData['channel_id'],
+                'channel_name'=>CommunicationChannel::getChannelNameById($communicationData['channel_id']),
+                'lead_id' => $communicationData['lead_id'],
+                'user_id' => $communicationData['user_id'],
+                'user' => User::getUserNameById($communicationData['user_id']),
+                'value' => $communicationData['value']
+            ];
+        }
+
 		return [
 			'id'=>$lead['id'],
 			'name'=>$lead['name'],
@@ -94,7 +107,8 @@ class LeadTransformer extends Transformer
 			'assignee_email'=>$lead['assignee']['email'],
             'domains'=>$domains,
             'contacts'=>$contacts,
-            'comments' => $comments
+            'comments' => $comments,
+            'communication_records' => $communicationRecords
 		];
 	}
 }

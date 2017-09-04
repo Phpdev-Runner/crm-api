@@ -43,6 +43,7 @@ class Lead extends Model
             ->with('domains')
             ->with('communicationValues')
             ->with('comments')
+            ->with('communicationRecords')
             ->find($id);
         return $lead;
     }
