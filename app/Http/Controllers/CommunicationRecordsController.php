@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\CommunicationRecord;
-use App\Http\Requests\StoreCommentPost;
 use App\Http\Requests\StoreComRecordPost;
 use App\Http\Requests\UpdateComRecordPost;
 use App\Transformers\ComRecordTransformer;
 use App\Transformers\CreateComRecordTransformer;
-use Illuminate\Http\Request;
 use App\CommunicationChannel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
