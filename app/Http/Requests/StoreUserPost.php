@@ -28,7 +28,7 @@ class StoreUserPost extends FormRequest
         return [
             'name'=>'required|min:3',
             'email'=>'required|email|unique:users,email',
-            'role_id'=>'required|integer|min:1',
+            'role_id'=>'required|integer|exists:roles,id',
             'password'=>'required|string|min:6'
         ];
     }

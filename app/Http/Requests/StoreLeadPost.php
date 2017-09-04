@@ -29,13 +29,17 @@ class StoreLeadPost extends FormRequest
     public function rules()
     {
         return [
-            'category_id' => 'required|integer|min:1',
-            'application_id' => 'required|integer|min:1',
-            'assignee_id' => 'required|integer|min:1',
+            'category_id' => 'required|integer|exists:lead_categories,id',
+            'application_id' => 'required|integer|exists:application_types,id',
+            'assignee_id' => 'required|integer|exists:users,id',
             'name' => 'required|string|min:6',
             'responsive' => 'required|integer|digits_between:0,1',
-            'domains' => 'required|array',
-//	        'domains.site' => 'distinct|url'
+            'domains' => 'required',
         ];
+    }
+    
+    public function withValidator($validator)
+    {
+    
     }
 }
