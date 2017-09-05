@@ -78,22 +78,8 @@ class LeadsController extends ApiController
      */
 	public function storeLead(StoreLeadPost $request)
 	{
-		var_dump(Input::get('domains'));
-		dd("OK!");
-		$domains = json_decode(Input::get('domains'),true);
-		$contacts = json_decode(Input::get('contacts'), true);
-
-        $duplicateDomains = $this->checkDomainDuplicates($domains);
-
-        if($duplicateDomains !== false){
-            return $this->respondDataConflict("Provided domains ( {$duplicateDomains} ) are already registered in the system");
-        }
-
-        $duplicatedEmails = $this->checkEmailDuplicates($contacts);
-
-        if($duplicatedEmails !== false){
-            return $this->respondDataConflict("Provided emails ( {$duplicatedEmails} ) are already binded with other leads");
-        }
+		$domains = array_unique(json_decode(Input::get('domains'),true));
+		$contacts = $this->removeDuplicateContacts(json_decode(Input::get('contacts'), true));
 
         $leadData = [
             'category_id' => Input::get('category_id'),
@@ -244,26 +230,24 @@ class LeadsController extends ApiController
         return $assignees;
     }
 
-    private function checkDomainDuplicates(array $domains)
+    private function removeDuplicateContacts(array $contacts)
     {
-        $duplicatesDomains = Domain::checkDomainDuplicates($domains);
-
-        return $duplicatesDomains;
-    }
-
-    private function checkEmailDuplicates(array $contacts)
-    {
-        $emailFieldName = config('constants.communication_channel.email');
-
-        $emailsArray = [];
-        foreach ($contacts AS $key=>$data){
-            if(array_key_exists($emailFieldName,$data)){
-                $emailsArray[] = $data[$emailFieldName];
+        $resultArray = [];
+        foreach ($contacts AS $dataArray){
+            foreach ($dataArray AS $comChannel=>$comValue){
+                $resultArray[$comChannel][] = $comValue;
             }
         }
-        $duplicatedEmails = CommunicationValue::checkEmailDuplicates($emailsArray);
-
-        return $duplicatedEmails;
+        foreach ($resultArray AS $comChannel => $camValueArray){
+            $resultArray[$comChannel] = array_unique($resultArray[$comChannel]);
+        }
+        $returnValue = [];
+        foreach ($resultArray AS $key=>$valueArray){
+            foreach ($valueArray AS $value){
+                $returnValue[] = [$key=>$value];
+            }
+        }
+        return $returnValue;
     }
 
     private function saveLead($leadData)
