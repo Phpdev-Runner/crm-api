@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class UpdateUserPost extends FormRequest
 {
@@ -23,14 +24,17 @@ class UpdateUserPost extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     * @todo add email duplicates validation later (other users email check for duplicates)
      */
     public function rules()
     {
         return [
             'name'=>'required|min:3',
-            'email'=>'required|email',
-            'role_id'=>'required|min:1'
+            'email'=>[
+                'required',
+                'email',
+                Rule::unique('users')->ignore($this->route('id'),'id')
+            ],
+            'role_id'=>'required|exists:roles,id'
         ];
     }
 }

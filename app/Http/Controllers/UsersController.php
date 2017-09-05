@@ -78,11 +78,6 @@ class UsersController extends ApiController
 	    $role_id = ($role_id === null)? Role::unauthorizedRoleId():$role_id;
 	    $password = bcrypt(Input::get('password'));
 
-	    //@todo remove it since we can do it through validation now
-	    if($this->checkNewEmailDuplicatePresence(Input::get('email')=== true)){
-		    return $this->respondBadRequest("Another user with email ".Input::get('email')." exists in DB!");
-	    }
-
 	    $user = new User();
 	    $user->name = $name;
 	    $user->email = $email;
@@ -123,10 +118,6 @@ class UsersController extends ApiController
 			return $this->respondNoContent("There is no user with ID {$id}");
 		}
 		
-		if($this->checkNewEmailDuplicatePresence(Input::get('email'), $manager->id) === true){
-			return $this->respondBadRequest("Another user with email ".Input::get('email')." exists in DB!");
-		}
-
 		if($manager->role->name == config('constants.roles.manager')){
 			$manager->name = Input::get('name');
 			$manager->email = Input::get('email');
@@ -174,13 +165,6 @@ class UsersController extends ApiController
 	{
 		$user = User::find($id);
 		return $user;
-	}
-	
-	private function checkNewEmailDuplicatePresence($newEmail, $userID = null)
-	{
-		$duplicateStatus = User::checkNewEmailDuplicate($newEmail, $userID);
-
-		return $duplicateStatus;
 	}
 	#endregion
 }
