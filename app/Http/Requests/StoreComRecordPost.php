@@ -24,8 +24,8 @@ class StoreComRecordPost extends FormRequest
     public function rules()
     {
         return [
-            'channel_id'=>'required|integer|min:1',
-            'lead_id'=>'required|integer|min:1',
+            'channel_id'=>'required|integer|exists:communication_channels,id',
+            'lead_id'=>'required|integer|exists:leads,id',
             'value'=>'required|string|min:3',
         ];
     }

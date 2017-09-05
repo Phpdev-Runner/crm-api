@@ -24,9 +24,9 @@ class UpdateComRecordPost extends FormRequest
     public function rules()
     {
         return [
-            'channel_id' => 'required|integer|min:1',
-            'lead_id' => 'required|integer|min:1',
-            'user_id' => 'required|integer|min:1',
+            'channel_id' => 'required|integer|exists:communication_channels,id',
+            'lead_id' => 'required|integer|exists:leads,id',
+            'user_id' => 'required|integer|exists:users,id',
             'value' => 'required|string|max:100'
         ];
     }
