@@ -16,12 +16,17 @@ class CommunicationValue extends Model
     #endregion
 
     #region MAIN METHODS
-    public static function checkEmailDuplicates(array $emails)
+    public static function checkEmailDuplicates(array $emails, $leadID = false)
     {
         $emailChannelID = CommunicationChannel::getChannelID(config('constants.communication_channel.email'));
-
-        $duplicatedEmails = self::where('channel_id','=',$emailChannelID)
-            ->whereIn('value',$emails)->get();
+        if($leadID === false){
+            $duplicatedEmails = self::where('channel_id','=',$emailChannelID)
+                ->whereIn('value',$emails)->get();
+        }else{
+            $duplicatedEmails = self::where('channel_id','=',$emailChannelID)
+                ->where('lead_id', '<>', $leadID)
+                ->whereIn('value',$emails)->get();
+        }
 
         if(count($duplicatedEmails) > 0){
             $returnData = [];
@@ -38,7 +43,8 @@ class CommunicationValue extends Model
 
     public static function deletePreviouslyAddedCommunicationValues(int $leadID)
     {
-        return false;
+        $deletedRows = self::where('lead_id','=',$leadID)->delete();
+        return $deletedRows;
     }
     #endregion
 

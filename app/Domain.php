@@ -21,9 +21,15 @@ class Domain extends Model
 
     #region MAIN METHODS
 
-    public static function checkDomainDuplicates(array $domains)
+    public static function checkDomainDuplicates(array $domains, $leadID = false)
     {
-        $duplicateDomains = self::whereIn('value',$domains)->get()->toArray();
+        if($leadID === false){
+            $duplicateDomains = self::whereIn('value',$domains)->get()->toArray();
+        }else{
+            $duplicateDomains = self::where('lead_id', '<>', $leadID)
+                ->whereIn('value',$domains)->get()->toArray();
+        }
+
 
         $returnData = [];
 

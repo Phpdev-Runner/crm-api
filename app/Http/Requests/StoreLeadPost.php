@@ -10,7 +10,7 @@ use App\CommunicationValue;
 
 class StoreLeadPost extends FormRequest
 {
-    use ResponseTrait;
+    use ResponseTrait, DomainDuplicateTrait, EmailDuplicateTrait;
 
     #region CLASS PROPERTIES
     private $duplicateDomains;
@@ -64,28 +64,4 @@ class StoreLeadPost extends FormRequest
             }
         });
     }
-
-    #region SERVICE METHODS
-    private function checkDomainDuplicates(array $domains)
-    {
-        $duplicatesDomains = Domain::checkDomainDuplicates($domains);
-
-        return $duplicatesDomains;
-    }
-
-    private function checkEmailDuplicates(array $contacts)
-    {
-        $emailFieldName = config('constants.communication_channel.email');
-
-        $emailsArray = [];
-        foreach ($contacts AS $key=>$data){
-            if(array_key_exists($emailFieldName,$data)){
-                $emailsArray[] = $data[$emailFieldName];
-            }
-        }
-        $duplicatedEmails = CommunicationValue::checkEmailDuplicates($emailsArray);
-
-        return $duplicatedEmails;
-    }
-    #endregion
 }

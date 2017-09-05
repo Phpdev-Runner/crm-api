@@ -127,8 +127,8 @@ class LeadsController extends ApiController
             return $this->respondNoContent("Lead with ID {$id} does not exists!");
         }
 
-        $domains = json_decode(Input::get('domains'),true);
-        $contacts = json_decode(Input::get('contacts'), true);
+        $domains = array_unique(json_decode(Input::get('domains'),true));
+        $contacts = $this->removeDuplicateContacts(json_decode(Input::get('contacts'), true));
 
         $leadData = [
             'category_id'=> Input::get('category_id'),
