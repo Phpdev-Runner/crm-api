@@ -9,6 +9,7 @@ use App\Transformers\CommentTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use App\Role;
 
 class CommentsController extends ApiController
 {
@@ -25,6 +26,9 @@ class CommentsController extends ApiController
 
     public function storeComment(StoreCommentPost $request)
     {
+        // AUTHORIZATION
+        $this->authorize('create', Comment::class);
+
         $dataComment = [
             'user_id' => Auth::id(),
             'lead_id' => Input::get('lead_id'),
@@ -44,6 +48,9 @@ class CommentsController extends ApiController
     {
         $comment = $this->findComment($id);
 
+        // AUTHORIZATION
+        $this->authorize('view', $comment);
+
         if($comment == null){
             return $this->respondNoContent("Comment with ID {$id} does not exits!");
         }
@@ -54,8 +61,11 @@ class CommentsController extends ApiController
 
     public function updateComment(UpdateCommentPost $request, $id)
     {
-
         $comment = $this->findComment($id);
+
+        // AUTHORIZATION
+        $this->authorize('update', $comment);
+
         if($comment == null){
             return $this->respondNoContent("Comment with ID {$id} does not exits!");
         }
@@ -78,6 +88,10 @@ class CommentsController extends ApiController
     public function deleteComment($id)
     {
         $comment = Comment::find($id);
+
+        // AUTHORIZATION
+        $this->authorize('delete', $comment);
+
         if($comment == null){
             return $this->respondNoContent("Comment with requested ID {$id} was not found!");
         }

@@ -17,11 +17,22 @@ class Role extends Model
 	{
 		$unauthorizedRoleID = self::where(
 				'name',
-				'=',config('roles.unauthorized'))->
-			first();
+				'=',config('constants.roles.unauthorized'))
+            ->first()->id;
 		
-		return $unauthorizedRoleID->id;
+		return $unauthorizedRoleID;
 	}
+
+	public static function adminRoleId()
+    {
+        $adminRoleID = self::where(
+            'name',
+            '=',
+            config('constants.roles.admin'))
+            ->first()->id;
+
+        return $adminRoleID;
+    }
 	
 	public static function getAllRoles()
 	{

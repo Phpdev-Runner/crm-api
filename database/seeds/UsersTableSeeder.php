@@ -28,6 +28,15 @@ class UsersTableSeeder extends Seeder
                 'password'=>bcrypt('secret')
             ]
         );
+
+        DB::table('users')->insert(
+            [
+                'name'=>'guest',
+                'email'=>'guest@gmail.com',
+                'role_id'=>\App\User::getRolesIDs([config('constants.roles.unauthorized')])[0],
+                'password'=>bcrypt('secret')
+            ]
+        );
         
         factory('App\User',5)->create();
     }

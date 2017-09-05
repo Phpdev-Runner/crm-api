@@ -28,6 +28,9 @@ class CommunicationRecordsController extends ApiController
 
     public function comRecordEmptyFormShow()
     {
+        // AUTHORIZE
+        $this->authorize('view');
+
         $communicationChannels = $this->getCommunicationChannels();
 
         $createComRecordFormData = [

@@ -5,6 +5,8 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Auth\Access\AuthorizationException;
+use App\Http\Controllers\ApiController;
 
 class Handler extends ExceptionHandler
 {
@@ -44,6 +46,14 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        // added manually to catch exception AuthorizationException
+        if($exception instanceof AuthorizationException){
+
+            $api = new ApiController();
+
+            return $api->respondActionForbidden();
+        }
+
         return parent::render($request, $exception);
     }
 
