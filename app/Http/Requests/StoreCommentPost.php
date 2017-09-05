@@ -19,14 +19,12 @@ class StoreCommentPost extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
     public function rules()
     {
         return [
-            'user_id' => 'required|integer|min:1',
-            'lead_id' => 'required|integer|min:1',
+            'user_id' => 'required|integer|exists:users,id',
+            'lead_id' => 'required|integer|exists:leads,id',
             'comment' => 'required|string|max:120'
         ];
     }
