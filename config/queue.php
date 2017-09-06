@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_DRIVER', 'sync'),
+    'default' => env('QUEUE_DRIVER', 'database'),
 
     /*
     |--------------------------------------------------------------------------
@@ -63,6 +63,29 @@ return [
             'queue' => 'default',
             'retry_after' => 90,
         ],
+
+        // CUSTOM ADDED CONNECTIONS
+        'high' => [
+            'driver' => 'database',
+            'table' => 'jobs',
+            'queue' => 'high',
+            'expire' => 60,
+        ],
+
+        'medium' => [
+            'driver' => 'database',
+            'table' => 'jobs',
+            'queue' => 'medium',
+            'expire' => 60,
+        ],
+
+        'low' => [
+            'driver' => 'database',
+            'table' => 'jobs',
+            'queue' => 'low',
+            'expire' => 60,
+        ],
+        // #END OF CUSTOM ADDED CONNECTIONS
 
     ],
 

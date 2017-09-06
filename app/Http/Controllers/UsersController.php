@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserPost;
 use App\Http\Requests\UpdateUserPost;
+use App\Jobs\SendMailJob;
+use App\Mail\InviteNewUser;
 use App\Role;
 use App\User;
 use App\Transformers\UserTransformer;
@@ -12,6 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Mail;
 
 class UsersController extends ApiController
 {
@@ -93,7 +96,9 @@ class UsersController extends ApiController
 	    $user->role_id = $role_id;
 	    $user->password = $password;
 	    $user->save();
-     
+
+	    $this->sendNewUserInvitation($user);
+
 	    return $this->respondCreated("new user successfully created!");
     }
 	
@@ -175,5 +180,11 @@ class UsersController extends ApiController
 		$user = User::find($id);
 		return $user;
 	}
+
+	private function sendNewUserInvitation(User $user)
+    {
+        $job = (new SendMailJob($user->email, (new InviteNewUser(Auth::user(), $user)) ))->onConnection('high');
+        $this->dispatch($job);
+    }
 	#endregion
 }
