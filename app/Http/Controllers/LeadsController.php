@@ -181,12 +181,10 @@ class LeadsController extends ApiController
         // AUTHORIZE
         $this->authorize('delete',$lead);
 
-        if(Auth::check() && Auth::user()->authHasRole() == config('constants.roles.admin')){
-            $lead->delete();
-            return $this->respondDeleted("Lead with ID ". $lead->id ." was successfully deleted!");
-        }else{
-            return $this->respondActionForbidden("Only Admin can delete Leads! You are not authorized!");
-        }
+        $lead->delete();
+
+        return $this->respondDeleted("Lead with ID ". $lead->id ." was successfully deleted!");
+
     }
 	#endregion
 	

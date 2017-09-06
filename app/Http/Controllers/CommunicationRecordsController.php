@@ -117,12 +117,9 @@ class CommunicationRecordsController extends ApiController
         // AUTHORIZE
         $this->authorize('delete', $comRecord);
 
-        if(Auth::user()->authHasRole() == config('constants.roles.admin') || Auth::id() == $comRecord->user_id){
-            $comRecord->delete();
-            return $this->respondDeleted("Communication Record with ID {$id} was successfully deleted!");
-        }else{
-            return $this->respondActionForbidden("Only Admin or Record's Author can delete this comm. record! You are not authorized!");
-        }
+        $comRecord->delete();
+        return $this->respondDeleted("Communication Record with ID {$id} was successfully deleted!");
+
     }
     #endregion
 

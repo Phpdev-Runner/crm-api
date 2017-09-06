@@ -111,12 +111,8 @@ class UsersController extends ApiController
         // AUTHORIZE
         $this->authorize('update',$manager);
 
-		if($manager->role->name == config('constants.roles.manager')){
-			$manager = $this->userTransformer->transformOneModel($manager);
-			return $this->respond($manager);
-		}else{
-			return $this->respondBadRequest("Selected user is not a manager");
-		}
+        $manager = $this->userTransformer->transformOneModel($manager);
+        return $this->respond($manager);
 	}
  
 	/**
@@ -132,16 +128,14 @@ class UsersController extends ApiController
 
         // AUTHORIZE
         $this->authorize('update',$manager);
-		
-		if($manager->role->name == config('constants.roles.manager')){
-			$manager->name = Input::get('name');
-			$manager->email = Input::get('email');
-			$manager->role_id = Input::get('role_id');
-			$manager->save();
-			return $this->respondUpdated("User with ID {$manager->id} updated successfully");
-		}else{
-			return $this->respondBadRequest("User with ID {$id} is not a manager");
-		}
+
+        $manager->name = Input::get('name');
+        $manager->email = Input::get('email');
+        $manager->role_id = Input::get('role_id');
+        $manager->save();
+
+        return $this->respondUpdated("User with ID {$manager->id} updated successfully");
+
 	}
 	
     /**
@@ -158,13 +152,9 @@ class UsersController extends ApiController
         // AUTHORIZE
         $this->authorize('delete',$user);
 
-        if($user->role->name == config('constants.roles.manager')
-            || $user->role->name == config('constants.roles.unauthorized')){
-            $user->delete();
-            return $this->respondDeleted("Manager with ID {$userID} was soft-deleted!");
-        }else{
-        	return $this->respondBadRequest("User with ID {$userID} is not a manager!");
-        }
+        $user->delete();
+        return $this->respondDeleted("Manager with ID {$userID} was soft-deleted!");
+
     }
     #endregion
 	

@@ -97,12 +97,9 @@ class CommentsController extends ApiController
         // AUTHORIZATION
         $this->authorize('delete', $comment);
 
-         if(Auth::user()->authHasRole() == config('constants.roles.admin') || Auth::user()->id == $comment->user_id){
-            $comment->delete();
-            return $this->respondDeleted("Comment with ID {$id} was successfully deleted!");
-        }else{
-            return $this->respondActionForbidden("Only Admin or Comment's Author can delete comment! You are not authorized!");
-        }
+        $comment->delete();
+        return $this->respondDeleted("Comment with ID {$id} was successfully deleted!");
+
     }
     #endregion
 
