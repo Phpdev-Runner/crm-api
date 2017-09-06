@@ -39,6 +39,9 @@ class UsersController extends ApiController
      */
     public function viewManagers()
     {
+        // AUTHORIZE
+        $this->authorize('view',User::class);
+
         $users = $this->getUsersWithRoles([config('constants.roles.manager')]);
 
         $users = $this->userTransformer->transformManyCollections($users);
@@ -58,6 +61,9 @@ class UsersController extends ApiController
 	 */
     public function userEmptyFormShow()
     {
+        // AUTHORIZE
+        $this->authorize('view',User::class);
+
     	$userEmptyFormData = $this->getDataForUserEmptyForm();
     	$userEmptyFormData = $this->createUserTransformer->
 	        transformDataForEmptyForm($userEmptyFormData);
@@ -72,6 +78,9 @@ class UsersController extends ApiController
      */
     public function storeManager(StoreUserPost $request)
     {
+        // AUTHORIZE
+        $this->authorize('create',User::class);
+
 	    $name = Input::get('name');
 	    $email = Input::get('email');
 	    $role_id = Input::get('role_id');
@@ -94,6 +103,9 @@ class UsersController extends ApiController
 	public function editManager($id)
 	{
 		$manager = $this->findUser($id);
+
+        // AUTHORIZE
+        $this->authorize('update',$manager);
 		
 		if($manager == null) {
 			return $this->respondNoContent("There is no user with ID {$id}");
@@ -113,6 +125,9 @@ class UsersController extends ApiController
 	public function updateManager(UpdateUserPost $request, $id)
 	{
 		$manager = $this->findUser($id);
+
+        // AUTHORIZE
+        $this->authorize('update',$manager);
 		
 		if($manager == null) {
 			return $this->respondNoContent("There is no user with ID {$id}");
@@ -136,11 +151,15 @@ class UsersController extends ApiController
     {
         $user = $this->findUser($userID);
 
+        // AUTHORIZE
+        $this->authorize('delete',$user);
+
         if($user === null){
         	return $this->respondNoContent("User with requested ID {$userID} was not found!");
         }
         
-        if($user->role->name == config('constants.roles.manager')){
+        if($user->role->name == config('constants.roles.manager')
+            || $user->role->name == config('constants.roles.unauthorized')){
             $user->delete();
             return $this->respondDeleted("Manager with ID {$userID} was soft-deleted!");
         }else{
