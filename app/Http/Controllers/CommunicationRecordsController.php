@@ -29,7 +29,7 @@ class CommunicationRecordsController extends ApiController
     public function comRecordEmptyFormShow()
     {
         // AUTHORIZE
-        $this->authorize('view');
+        $this->authorize('view', CommunicationRecord::class);
 
         $communicationChannels = $this->getCommunicationChannels();
 
@@ -43,6 +43,9 @@ class CommunicationRecordsController extends ApiController
 
     public function storeComRecord(StoreComRecordPost $request)
     {
+        // AUTHORIZE
+        $this->authorize('create', CommunicationRecord::class);
+
         $comRecordData = [
             'channel_id'=>Input::get('channel_id'),
             'lead_id'=>Input::get('lead_id'),
@@ -63,6 +66,9 @@ class CommunicationRecordsController extends ApiController
     {
         $comRecord = CommunicationRecord::find($id);
 
+        // AUTHORIZE
+        $this->authorize('update', $comRecord);
+
         if($comRecord == null){
             return $this->respondNoContent("Communication Record with ID {$id} does not exits!");
         }
@@ -75,6 +81,9 @@ class CommunicationRecordsController extends ApiController
     public function updateComRecord(UpdateComRecordPost $request, $id)
     {
         $comRecord = CommunicationRecord::find($id);
+
+        // AUTHORIZE
+        $this->authorize('update', $comRecord);
 
         if($comRecord === null){
             return $this->respondNoContent("Communication Record with ID {$id} does not exists!");
@@ -100,6 +109,9 @@ class CommunicationRecordsController extends ApiController
     public function deleteComRecord($id)
     {
         $comRecord = CommunicationRecord::find($id);
+
+        // AUTHORIZE
+        $this->authorize('delete', $comRecord);
 
         if($comRecord == null){
             return $this->respondNoContent("Communication Record with requested ID {$id} was not found!");

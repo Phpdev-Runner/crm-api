@@ -29,7 +29,6 @@ class CommunicationRecordPolicy
      */
     public function view(User $user)
     {
-        dd("WTF?");
         return $user->role_id !== Role::unauthorizedRoleId();
     }
 
@@ -41,7 +40,7 @@ class CommunicationRecordPolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->role_id !== Role::unauthorizedRoleId();
     }
 
     /**
@@ -53,7 +52,7 @@ class CommunicationRecordPolicy
      */
     public function update(User $user, CommunicationRecord $communicationRecord)
     {
-        //
+        return $user->id == $communicationRecord->user_id;
     }
 
     /**
@@ -65,6 +64,6 @@ class CommunicationRecordPolicy
      */
     public function delete(User $user, CommunicationRecord $communicationRecord)
     {
-        //
+        return $user->id == $communicationRecord->user_id;
     }
 }
