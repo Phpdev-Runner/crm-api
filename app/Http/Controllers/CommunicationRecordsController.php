@@ -66,12 +66,12 @@ class CommunicationRecordsController extends ApiController
     {
         $comRecord = CommunicationRecord::find($id);
 
-        // AUTHORIZE
-        $this->authorize('update', $comRecord);
-
         if($comRecord == null){
             return $this->respondNoContent("Communication Record with ID {$id} does not exits!");
         }
+
+        // AUTHORIZE
+        $this->authorize('update', $comRecord);
 
         $comRecord = $this->comRecordTransformer->transformOneModel($comRecord);
 
@@ -82,12 +82,12 @@ class CommunicationRecordsController extends ApiController
     {
         $comRecord = CommunicationRecord::find($id);
 
-        // AUTHORIZE
-        $this->authorize('update', $comRecord);
-
         if($comRecord === null){
             return $this->respondNoContent("Communication Record with ID {$id} does not exists!");
         }
+
+        // AUTHORIZE
+        $this->authorize('update', $comRecord);
 
         $comRecordData = [
             'channel_id' => Input::get('channel_id'),
@@ -110,12 +110,12 @@ class CommunicationRecordsController extends ApiController
     {
         $comRecord = CommunicationRecord::find($id);
 
-        // AUTHORIZE
-        $this->authorize('delete', $comRecord);
-
         if($comRecord == null){
             return $this->respondNoContent("Communication Record with requested ID {$id} was not found!");
         }
+
+        // AUTHORIZE
+        $this->authorize('delete', $comRecord);
 
         if(Auth::user()->authHasRole() == config('constants.roles.admin') || Auth::id() == $comRecord->user_id){
             $comRecord->delete();

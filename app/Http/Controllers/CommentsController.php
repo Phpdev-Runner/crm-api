@@ -48,12 +48,13 @@ class CommentsController extends ApiController
     {
         $comment = $this->findComment($id);
 
-        // AUTHORIZATION
-        $this->authorize('view', $comment);
-
         if($comment == null){
             return $this->respondNoContent("Comment with ID {$id} does not exits!");
         }
+
+        // AUTHORIZATION
+        $this->authorize('view', $comment);
+
         $comment = $this->commentTransformer->transformOneModel($comment);
 
         return $this->respond($comment);
@@ -63,12 +64,12 @@ class CommentsController extends ApiController
     {
         $comment = $this->findComment($id);
 
-        // AUTHORIZATION
-        $this->authorize('update', $comment);
-
         if($comment == null){
             return $this->respondNoContent("Comment with ID {$id} does not exits!");
         }
+
+        // AUTHORIZATION
+        $this->authorize('update', $comment);
 
         $dataComment = [
             'user_id' => Auth::id(),
@@ -89,14 +90,14 @@ class CommentsController extends ApiController
     {
         $comment = Comment::find($id);
 
-        // AUTHORIZATION
-        $this->authorize('delete', $comment);
-
         if($comment == null){
             return $this->respondNoContent("Comment with requested ID {$id} was not found!");
         }
 
-        if(Auth::user()->authHasRole() == config('constants.roles.admin') || Auth::user()->id == $comment->user_id){
+        // AUTHORIZATION
+        $this->authorize('delete', $comment);
+
+         if(Auth::user()->authHasRole() == config('constants.roles.admin') || Auth::user()->id == $comment->user_id){
             $comment->delete();
             return $this->respondDeleted("Comment with ID {$id} was successfully deleted!");
         }else{

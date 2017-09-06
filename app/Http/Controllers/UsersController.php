@@ -104,13 +104,13 @@ class UsersController extends ApiController
 	{
 		$manager = $this->findUser($id);
 
+        if($manager == null) {
+            return $this->respondNoContent("There is no user with ID {$id}");
+        }
+
         // AUTHORIZE
         $this->authorize('update',$manager);
-		
-		if($manager == null) {
-			return $this->respondNoContent("There is no user with ID {$id}");
-		}
-		
+
 		if($manager->role->name == config('constants.roles.manager')){
 			$manager = $this->userTransformer->transformOneModel($manager);
 			return $this->respond($manager);
@@ -126,12 +126,12 @@ class UsersController extends ApiController
 	{
 		$manager = $this->findUser($id);
 
+        if($manager == null) {
+            return $this->respondNoContent("There is no user with ID {$id}");
+        }
+
         // AUTHORIZE
         $this->authorize('update',$manager);
-		
-		if($manager == null) {
-			return $this->respondNoContent("There is no user with ID {$id}");
-		}
 		
 		if($manager->role->name == config('constants.roles.manager')){
 			$manager->name = Input::get('name');
@@ -151,13 +151,13 @@ class UsersController extends ApiController
     {
         $user = $this->findUser($userID);
 
+        if($user === null){
+            return $this->respondNoContent("User with requested ID {$userID} was not found!");
+        }
+
         // AUTHORIZE
         $this->authorize('delete',$user);
 
-        if($user === null){
-        	return $this->respondNoContent("User with requested ID {$userID} was not found!");
-        }
-        
         if($user->role->name == config('constants.roles.manager')
             || $user->role->name == config('constants.roles.unauthorized')){
             $user->delete();

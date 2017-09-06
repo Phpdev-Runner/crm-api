@@ -117,12 +117,13 @@ class LeadsController extends ApiController
     {
         $lead = $this->findLead($id);
 
-        // AUTHORIZE
-        $this->authorize('update',$lead);
-
         if($lead == null){
             return $this->respondNoContent("Lead with ID {$id} does not exits!");
         }
+
+        // AUTHORIZE
+        $this->authorize('update',$lead);
+
         $lead = $this->leadTransformer->transformOneModel($lead);
 
         return $this->respond($lead);
@@ -135,12 +136,12 @@ class LeadsController extends ApiController
     {
         $lead = $this->findLead($id);
 
-        // AUTHORIZE
-        $this->authorize('update',$lead);
-
         if($lead === null){
             return $this->respondNoContent("Lead with ID {$id} does not exists!");
         }
+
+        // AUTHORIZE
+        $this->authorize('update',$lead);
 
         $domains = array_unique(json_decode(Input::get('domains'),true));
         $contacts = $this->removeDuplicateContacts(json_decode(Input::get('contacts'), true));
@@ -173,12 +174,12 @@ class LeadsController extends ApiController
     {
         $lead = Lead::find($leadID);
 
-        // AUTHORIZE
-        $this->authorize('delete',$lead);
-
         if($lead == null){
             return $this->respondNoContent("Lead with requested ID {$leadID} was not found!");
         }
+
+        // AUTHORIZE
+        $this->authorize('delete',$lead);
 
         if(Auth::check() && Auth::user()->authHasRole() == config('constants.roles.admin')){
             $lead->delete();
