@@ -10,7 +10,6 @@ class StoreCommentPost extends FormRequest
 
     /**
      * Determine if the user is authorized to make this request.
-     * @todo finish athorize validation rules
      */
     public function authorize()
     {

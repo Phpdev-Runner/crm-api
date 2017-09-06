@@ -12,21 +12,14 @@ class UpdateLeadPost extends FormRequest
 
     /**
      * Determine if the user is authorized to make this request.
-     * @todo add more sophisticated validation check
      */
     public function authorize()
     {
-        if(Auth::check()){
-            return true;
-        }else{
-            return false;
-        }
-
+        return  true;
     }
 
     /**
      * Get the validation rules that apply to the request.
-     * @todo complete validation rules for domains and contacts
      */
     public function rules()
     {

@@ -9,7 +9,6 @@ class UpdateComRecordPost extends FormRequest
     use ResponseTrait;
     /**
      * Determine if the user is authorized to make this request.
-     * @todo complete authorize method
      */
     public function authorize()
     {

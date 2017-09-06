@@ -20,15 +20,10 @@ class StoreLeadPost extends FormRequest
 
 	/**
      * Determine if the user is authorized to make this request.
-     * @todo finish authorization
      */
     public function authorize()
     {
-    	if(Auth::check()){
-		    return true;
-	    }else{
-    		return false;
-	    }
+        return true;
     }
 
     /**

@@ -9,7 +9,6 @@ class StoreComRecordPost extends FormRequest
     use ResponseTrait;
     /**
      * Determine if the user is authorized to make this request.
-     * @todo complete authorize function
      */
     public function authorize()
     {

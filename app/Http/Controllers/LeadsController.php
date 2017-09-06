@@ -39,6 +39,9 @@ class LeadsController extends ApiController
      */
 	public function viewLeads()
 	{
+	    // AUTHORIZE
+	    $this->authorize('view', Lead::class);
+
 		$leads = $this->findAllLeads();
 
 		$leads = $this->leadTransformer->transformManyCollections($leads);
@@ -57,6 +60,9 @@ class LeadsController extends ApiController
      */
 	public function leadEmptyFormShow()
 	{
+        // AUTHORIZE
+        $this->authorize('view',Lead::class);
+
 		$leadCategories = $this->getLeadCategories();
 		$leadApplicationTypes = $this->getApplicationTypes();
 		$assignees = $this->getAssignees();
@@ -78,6 +84,9 @@ class LeadsController extends ApiController
      */
 	public function storeLead(StoreLeadPost $request)
 	{
+        // AUTHORIZE
+        $this->authorize('create',Lead::class);
+
 		$domains = array_unique(json_decode(Input::get('domains'),true));
 		$contacts = $this->removeDuplicateContacts(json_decode(Input::get('contacts'), true));
 
@@ -108,6 +117,9 @@ class LeadsController extends ApiController
     {
         $lead = $this->findLead($id);
 
+        // AUTHORIZE
+        $this->authorize('update',$lead);
+
         if($lead == null){
             return $this->respondNoContent("Lead with ID {$id} does not exits!");
         }
@@ -122,6 +134,9 @@ class LeadsController extends ApiController
     public function updateLead(UpdateLeadPost $request, $id)
     {
         $lead = $this->findLead($id);
+
+        // AUTHORIZE
+        $this->authorize('update',$lead);
 
         if($lead === null){
             return $this->respondNoContent("Lead with ID {$id} does not exists!");
@@ -157,6 +172,10 @@ class LeadsController extends ApiController
     public function deleteLead($leadID)
     {
         $lead = Lead::find($leadID);
+
+        // AUTHORIZE
+        $this->authorize('delete',$lead);
+
         if($lead == null){
             return $this->respondNoContent("Lead with requested ID {$leadID} was not found!");
         }
