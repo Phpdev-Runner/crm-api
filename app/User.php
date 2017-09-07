@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -65,6 +66,21 @@ class User extends Authenticatable
     public function authHasRole()
     {
         return Auth::user()->role->name;
+    }
+
+    public static function storeNewPassword($email, $password)
+    {
+        $user = self::where('email','=',$email)->first();
+        $user->password = bcrypt($password);
+        $user->save();
+
+        if($user->id !== null){
+            PasswordResets::deletePasswordResetRow($email);
+            return $user->id;
+        }
+
+        return false;
+
     }
 
 	#endregion

@@ -8,13 +8,14 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class InviteNewUser extends Mailable
+class InviteNewUser extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     #region PROPERTIES
     public $creator;
     public $receptor;
+    private $token;
     #endregion
 
     /**
@@ -26,6 +27,7 @@ class InviteNewUser extends Mailable
     {
         $this->creator = $creator;
         $this->receptor = $receptor;
+        $this->token = urlencode(base64_encode($receptor->name.$receptor->email));
     }
 
     /**
@@ -35,6 +37,9 @@ class InviteNewUser extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.users.invite-new-user');
+        return $this->markdown('emails.users.invite-new-user')
+            ->with([
+                'token'=>$this->token
+            ]);
     }
 }
