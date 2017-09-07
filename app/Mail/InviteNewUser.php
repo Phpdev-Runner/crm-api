@@ -35,6 +35,6 @@ class InviteNewUser extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.users.created');
+        return $this->markdown('emails.users.invite-new-user');
     }
 }

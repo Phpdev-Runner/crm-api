@@ -1,6 +1,6 @@
 @component('mail::message')
 # Invitation to {{$_ENV['APP_NAME']}} system.
-Dear {{$user->name}},
+Dear {{$receptor->name}},
 
 {{$creator->name}} invited you to join our CRM System!
 

@@ -97,6 +97,7 @@ class UsersController extends ApiController
 	    $user->password = $password;
 	    $user->save();
 
+	    // SEND INVITATION TO NEW USER
 	    $this->sendNewUserInvitation($user);
 
 	    return $this->respondCreated("new user successfully created!");
@@ -183,8 +184,11 @@ class UsersController extends ApiController
 
 	private function sendNewUserInvitation(User $user)
     {
-        $job = (new SendMailJob($user->email, (new InviteNewUser(Auth::user(), $user)) ))->onConnection('high');
-        $this->dispatch($job);
+        $message = (new InviteNewUser(Auth::user(), $user))
+            ->onConnection('high');
+
+        Mail::to($user)
+            ->queue($message);
     }
 	#endregion
 }
