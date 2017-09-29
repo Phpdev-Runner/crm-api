@@ -1,0 +1,8 @@
+[
+    {
+        "level": "SEVERE",
+        "message": "http:\/\/leads.dev\/_debugbar\/assets\/javascript?v=1504004298 3:24831 Uncaught TypeError: Cannot read property 'style' of undefined",
+        "source": "javascript",
+        "timestamp": 1505119410317
+    }
+]
