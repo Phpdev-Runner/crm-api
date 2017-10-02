@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePasswordPost;
 use App\Http\Requests\StoreUserPost;
 use App\Http\Requests\UpdateUserPost;
 use App\Jobs\SendMailJob;
 use App\Mail\InviteNewUser;
+use App\PasswordResets;
 use App\Role;
 use App\User;
 use App\Transformers\UserTransformer;
@@ -97,9 +99,47 @@ class UsersController extends ApiController
 	    $user->password = $password;
 	    $user->save();
 
-	    $this->sendNewUserInvitation($user);
+	    // GENERATE TOKEN TO SETTLE NEW PASSWORD FOR USER FIRST LOGIN
+        $tokenID = $this->setTokenToChangePassword($user);
+
+        if($tokenID !== false && $tokenID > 0){
+            // SEND INVITATION TO NEW USER
+            $this->sendNewUserInvitation($user);
+        }else{
+            return $this->respondDataConflict("Due to unknown reason Token to set password for new User was not created!");
+        }
 
 	    return $this->respondCreated("new user successfully created!");
+    }
+
+    /**
+     * Shows form for new user to set new password
+     */
+    public function setNewPassword($token)
+    {
+        $tokenPresence = $this->checkTokenPresence($token);
+
+        if($tokenPresence !== null){
+            return view('auth.passwords.set-new-password')->with('token',$token);
+        }else{
+            dd("Link your are following is not valid any more!");
+        }
+    }
+
+    /**
+     * Store new password in DB for new user
+     */
+    public function storeNewPassword(StorePasswordPost $request)
+    {
+        $email = Input::get('email');
+        $password = Input::get('password');
+        $setPasswordStatus = $this->storeNewlyCreatedPassword($email, $password);
+
+        if($setPasswordStatus > 0){
+            return $this->respondUpdated("password changed successfully");
+        }else{
+            return $this->respondDataConflict("Due to unknown reason password was not changed");
+        }
     }
 	
 	/**
@@ -183,11 +223,30 @@ class UsersController extends ApiController
 
 	private function sendNewUserInvitation(User $user)
     {
-        $job = (new SendMailJob($user->email,
-	            (new InviteNewUser(Auth::user(), $user)) )
-        )->onConnection('high');
-        
-        $this->dispatch($job);
+        $message = (new InviteNewUser(Auth::user(), $user))
+            ->onConnection('high');
+
+        Mail::to($user)
+            ->queue($message);
     }
+
+    private function setTokenToChangePassword(User $user)
+    {
+        $tokenID = PasswordResets::setTokenToMakeNewPassword($user);
+        return $tokenID;
+    }
+
+    private function checkTokenPresence($token)
+    {
+        $resetPassword = PasswordResets::checkTokenPresence($token);
+        return $resetPassword;
+    }
+
+    private function storeNewlyCreatedPassword($email, $password)
+    {
+        $newPasswordStatus = User::storeNewPassword($email,$password);
+        return $newPasswordStatus;
+    }
+
 	#endregion
 }

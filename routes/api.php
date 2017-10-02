@@ -30,8 +30,10 @@ Route::group(['prefix'=>'v1'], function(){
 	Route::get('edit-manager/{id}','UsersController@editManager');
 	Route::post('update-manager/{id}','UsersController@updateManager');
 	Route::get('delete-manager/{id}', 'UsersController@deleteManager');
-	
-	Route::post('invite-manager','UsersController@inviteManager');
+
+	// MANAGER'S ACCOUNT SETTING
+	Route::get('set-new-password/{token}','UsersController@setNewPassword');
+	Route::post('store-new-password','UsersController@storeNewPassword')->name('store-new-password');
 	
 	// LEADS
 	Route::get('view-leads','LeadsController@viewLeads');
@@ -56,7 +58,8 @@ Route::group(['prefix'=>'v1'], function(){
 
 	//test
     Route::get('test',function(){
-        var_dump(Auth::check());
+        $test = 'test';
+        dd(route('store-new-password'));
     });
 
 });
