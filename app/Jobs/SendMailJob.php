@@ -19,6 +19,7 @@ class SendMailJob implements ShouldQueue
     #region PROPERTIES
     public $receptor;
     public $emailObject;
+	public $tries = 5;
     #endregion
 
     /**

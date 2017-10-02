@@ -183,7 +183,10 @@ class UsersController extends ApiController
 
 	private function sendNewUserInvitation(User $user)
     {
-        $job = (new SendMailJob($user->email, (new InviteNewUser(Auth::user(), $user)) ))->onConnection('high');
+        $job = (new SendMailJob($user->email,
+	            (new InviteNewUser(Auth::user(), $user)) )
+        )->onConnection('high');
+        
         $this->dispatch($job);
     }
 	#endregion
